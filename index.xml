@@ -6,13 +6,13 @@
     <description>Recent content on Cognition</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 04 Jun 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>An Example Post</title>
-      <link>https://cognitionsh.github.io/post/testpage/</link>
-      <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
+      <title>Java High Availability with WildFly on Kubernetes</title>
+      <link>https://cognitionsh.github.io/post/kubernetes-wildfly/</link>
+      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://cognitionsh.github.io/post/testpage/</guid>
+      <guid>https://cognitionsh.github.io/post/kubernetes-wildfly/</guid>
       <description></description>
     </item>
     
