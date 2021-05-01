@@ -5,16 +5,6 @@
     <link>https://cognitionsh.github.io/categories/</link>
     <description>Recent content in Categories on Cognition</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 04 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>category</title>
-      <link>https://cognitionsh.github.io/categories/category/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://cognitionsh.github.io/categories/category/</guid>
-      <description></description>
-    </item>
-    
+    <language>en-us</language><atom:link href="https://cognitionsh.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
