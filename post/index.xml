@@ -6,14 +6,14 @@
     <description>Recent content in Posts on Cognition</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 04 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Java High Availability with WildFly on Kubernetes</title>
+      <title>Custom configuration options in the theme</title>
       <link>https://cognitionsh.github.io/post/kubernetes-wildfly/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/post/kubernetes-wildfly/</guid>
-      <description></description>
+      <description>&lt;p&gt;Here, we will mainly see settings that are unique to this theme. If something is not covered here (or elsewhere in this file), there&amp;rsquo;s a good chance it is covered in &lt;a href=&#34;https://gohugo.io/getting-started/configuration/#configuration-file&#34;&gt;this Hugo docs page&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     
   </channel>
