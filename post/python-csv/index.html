@@ -142,6 +142,7 @@
         <nav id="TableOfContents">
   <ol>
     <li><a href="#dataframe--dataset">Dataframe / Dataset</a></li>
+    <li><a href="#pandas">Pandas</a></li>
   </ol>
 </nav>
       </div>
@@ -168,7 +169,7 @@
               
                 
               
-            By Mauricio Magnani &#183; 0 min read &#183; <span class=''>Last updated: May 1, 2021</div>
+            By Mauricio Magnani &#183; 1 min read &#183; <span class=''>Last updated: May 1, 2021</div>
           
           
           
@@ -216,15 +217,35 @@
       <p>Com o avanço da adoção da tecnologia para acelerar as pequisas na área cientifica, cada vez mais pessoas estão buscando formas otimizadas de manipular massa de dados (dataset, dataframe). Sendo assim nas próximas linhas irei abordar algumas maneiras de alcançar esse objetivo.</p>
 <h2 id="dataframe--dataset">Dataframe / Dataset</h2>
 <p><a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
+<h2 id="pandas">Pandas</h2>
 <p>These options can be set from a page <a href="https://gohugo.io/content-management/front-matter#readout">front-matter</a> or via <a href="https://gohugo.io/content-management/archetypes/#readout">archetypes</a> (i.e. when you create a new content file via <code>hugo new</code> command).</p>
 <ol>
 <li>
 <p><strong>Title</strong> <em>(Type: String | Accepts value: Text | Required)</em></p>
 <p>It is the title of the current page/post you are writing.</p>
 <p>Example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">title</span>: <span style="color:#e6db74">&#34;A post that takes you into space&#34;</span>
-</code></pre></div></li>
+</li>
 </ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">from</span> dateutil.relativedelta <span style="color:#f92672">import</span> relativedelta
+<span style="color:#f92672">from</span> datetime <span style="color:#f92672">import</span> datetime
+
+url_dados_ipca <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.4449/dados?formato=csv&#39;</span>
+ipca_dados <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url_dados_ipca, delimiter<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;;&#39;</span>)
+<span style="color:#66d9ef">print</span>(ipca_dados)
+
+um_ano_atras <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>today() <span style="color:#f92672">+</span> relativedelta(months<span style="color:#f92672">=-</span><span style="color:#ae81ff">12</span>)
+hoje <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>today()
+
+date_format <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">/%m/%Y&#39;</span>
+datas <span style="color:#f92672">=</span> []
+
+<span style="color:#66d9ef">for</span> data <span style="color:#f92672">in</span> ipca_dados[<span style="color:#e6db74">&#39;data&#39;</span>]:
+    <span style="color:#66d9ef">if</span> ((datetime<span style="color:#f92672">.</span>strptime(hoje<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">/%m/%Y&#39;</span>), date_format) <span style="color:#f92672">-</span> datetime<span style="color:#f92672">.</span>strptime(data, date_format))<span style="color:#f92672">.</span>days <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">500</span>):
+        datas<span style="color:#f92672">.</span>append(data)
+
+data_series <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Series(datas)    
+</code></pre></div>
       </div>
       
       
