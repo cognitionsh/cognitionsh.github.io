@@ -219,13 +219,14 @@
       <div class="py-3 my-2">
       <p>Com o avanço da adoção da tecnologia para acelerar as pequisas na área cientifica, cada vez mais pessoas estão buscando formas otimizadas de manipular massa de dados (dataset, dataframe). Sendo assim nas próximas linhas irei abordar algumas maneiras de alcançar esse objetivo.</p>
 <h2 id="dataframe--dataset">Dataframe / Dataset</h2>
-<p><a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
+<p>Índice Nacional de Preços ao Consumidor Amplo – IPCA que tem por objetivo medir a inflação de um conjunto de produtos e serviços comercializados no varejo, referentes ao consumo pessoal das famílias.</p>
+<p>Fonte: <a href="https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html">https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html</a></p>
+<p>Dataset IPCA:  <a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
 <h2 id="python-baixa-performance">Python Baixa Performance</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arquivo <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;pessoas.csv&#39;</span>)
 dados <span style="color:#f92672">=</span> arquivo<span style="color:#f92672">.</span>read()
 arquivo<span style="color:#f92672">.</span>close()
 <span style="color:#66d9ef">for</span> registro <span style="color:#f92672">in</span> dados<span style="color:#f92672">.</span>splitlines():
-    <span style="color:#75715e"># print(*registro.split(&#39;,&#39;))</span>
     <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Nome: {}, Idade: {}&#39;</span><span style="color:#f92672">.</span>format(<span style="color:#f92672">*</span>registro<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;,&#39;</span>)))
 </code></pre></div><h2 id="python-média-performance">Python Média Performance</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arquivo <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;pessoas.csv&#39;</span>)
@@ -249,14 +250,6 @@ arquivo<span style="color:#f92672">.</span>close()
 <span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
     read(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.4449/dados?formato=csv&#39;</span>)
 </code></pre></div><h2 id="python-pandas">Python Pandas</h2>
-<p>These options can be set from a page <a href="https://gohugo.io/content-management/front-matter#readout">front-matter</a> or via <a href="https://gohugo.io/content-management/archetypes/#readout">archetypes</a> (i.e. when you create a new content file via <code>hugo new</code> command).</p>
-<ol>
-<li>
-<p><strong>Title</strong> <em>(Type: String | Accepts value: Text | Required)</em></p>
-<p>It is the title of the current page/post you are writing.</p>
-<p>Example:</p>
-</li>
-</ol>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
 <span style="color:#f92672">from</span> dateutil.relativedelta <span style="color:#f92672">import</span> relativedelta
 <span style="color:#f92672">from</span> datetime <span style="color:#f92672">import</span> datetime
