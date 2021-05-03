@@ -3,27 +3,12 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://cognitionsh.github.io/tags/amazon/</loc>
+    <loc>https://cognitionsh.github.io/tags/csv/</loc>
     <lastmod>2021-05-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://cognitionsh.github.io/tags/arduino/</loc>
-    <lastmod>2021-05-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cognitionsh.github.io/tags/containers/</loc>
-    <lastmod>2021-05-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cognitionsh.github.io/tags/openshift/</loc>
-    <lastmod>2021-05-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://cognitionsh.github.io/post/openshift-iot/</loc>
+    <loc>https://cognitionsh.github.io/tags/pandas/</loc>
     <lastmod>2021-05-01T00:00:00+00:00</lastmod>
   </url>
   
@@ -34,6 +19,11 @@
   
   <url>
     <loc>https://cognitionsh.github.io/tags/python/</loc>
+    <lastmod>2021-05-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://cognitionsh.github.io/post/python-csv/</loc>
     <lastmod>2021-05-01T00:00:00+00:00</lastmod>
   </url>
   

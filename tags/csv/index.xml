@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Vibrant Shadows Theme</title>
-    <link>https://cognitionsh.github.io/post/</link>
-    <description>Recent content in Posts on Vibrant Shadows Theme</description>
+    <title>csv on Vibrant Shadows Theme</title>
+    <link>https://cognitionsh.github.io/tags/csv/</link>
+    <description>Recent content in csv on Vibrant Shadows Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright &amp;#169; 2020 Softorage. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/tags/csv/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Quatro Maneiras de Manipular Arquivo CSV em Python</title>
       <link>https://cognitionsh.github.io/post/python-csv/</link>
