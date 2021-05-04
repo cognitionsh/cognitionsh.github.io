@@ -219,11 +219,11 @@
       <div class="py-3 my-2">
       <p>Com o avanço da adoção da tecnologia para acelerar as pequisas na área cientifica, cada vez mais pessoas estão buscando formas otimizadas de manipular massa de dados (dataset, dataframe). Sendo assim nas próximas linhas irei abordar algumas maneiras de alcançar esse objetivo.</p>
 <h2 id="dataframe--dataset--csv">Dataframe / Dataset / CSV</h2>
-<p>Nesse post vamos abordar a manipulação de dados a partir de arquivo CSV (Comma-Separated Values ). O CSV é um formato de arquivo texto que armazena os dados de forma tabular separados por um delimitador que por padrão é a virgula.</p>
-<p>De forma superficial a definição para Dataframe / Dataset é basicamente a mesma. Um conjunto de dados tabulados composto por linhas e colunas.</p>
-<p>Nos proximoa exemploes iremos utilizar um Dataset do IPCA (Índice Nacional de Preços ao Consumidor Amplo) que tem por objetivo medir a inflação de um conjunto de produtos e serviços comercializados no varejo, referentes ao consumo pessoal das famílias.</p>
+<p>Nesse post vamos abordar a manipulação de dados a partir de arquivo CSV (Comma-Separated Values ). O CSV é um formato de arquivo texto que armazena os dados de forma tabular separados por um delimitador que por padrão é a vírgula.</p>
+<p>De forma superficial a definição para Dataframe/Dataset é basicamente a mesma. Um conjunto de dados tabulados composto por linhas e colunas.</p>
+<p>Nos próximos exemplos iremos utilizar um Dataset do IPCA (Índice Nacional de Preços ao Consumidor Amplo) que tem por objetivo medir a inflação de um conjunto de produtos e serviços comercializados no varejo, referentes ao consumo pessoal das famílias.</p>
 <p>Fonte: <a href="https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html">https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html</a></p>
-<p>O dataset do IPCA no formato CSV pode ser obtivo em:  <a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
+<p>O dataset do IPCA no formato CSV pode ser obtido em:  <a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
 <h2 id="python-baixa-performance">Python Baixa Performance</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arquivo <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;pessoas.csv&#39;</span>)
 dados <span style="color:#f92672">=</span> arquivo<span style="color:#f92672">.</span>read()
