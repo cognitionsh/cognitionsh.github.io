@@ -97,7 +97,7 @@
   
   
   
-  <link rel="stylesheet" href="/assets/css/main.min.15838cfcd07f411136b1b749f023b28573aa0fd173834a13ea7b015274a4a3fc.css" integrity="sha256-FYOM/NB/QRE2sbdJ8COyhXOqD9Fzg0oT6nsBUnSko/w=" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/main.min.5850e0d237d48db557dccb91349399dcb8ddfc839c5d757ef83da4cc45fca5ff.css" integrity="sha256-WFDg0jfUjbVX3MuRNJOZ3Ljd/IOcXXV&#43;&#43;D2kzEX8pf8=" crossorigin="anonymous">
   
   <link rel="dns-prefetch" href="//fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
@@ -225,11 +225,23 @@
 <p>Fonte: <a href="https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html">https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html</a></p>
 <p>O dataset do IPCA no formato CSV pode ser obtido em:  <a href="https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total">https://dados.gov.br/dataset/4449-indice-nacional-de-precos-ao-consumidor-amplo-ipca-precos-monitorados-total</a></p>
 <h2 id="python-baixa-performance">Python Baixa Performance</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arquivo <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;pessoas.csv&#39;</span>)
-dados <span style="color:#f92672">=</span> arquivo<span style="color:#f92672">.</span>read()
-arquivo<span style="color:#f92672">.</span>close()
-<span style="color:#66d9ef">for</span> registro <span style="color:#f92672">in</span> dados<span style="color:#f92672">.</span>splitlines():
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#39;Nome: {}, Idade: {}&#39;</span><span style="color:#f92672">.</span>format(<span style="color:#f92672">*</span>registro<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;,&#39;</span>)))
+<p>Tempo de execução: 0.2969519220005168</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+<span style="color:#f92672">import</span> timeit
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read_csv</span>(url):
+    entrada <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>urlopen(url)
+    dados <span style="color:#f92672">=</span> entrada<span style="color:#f92672">.</span>read()
+    entrada<span style="color:#f92672">.</span>close()
+    <span style="color:#66d9ef">for</span> registro <span style="color:#f92672">in</span> dados<span style="color:#f92672">.</span>splitlines():
+        <span style="color:#66d9ef">print</span>(registro)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+
+    <span style="color:#66d9ef">print</span>(timeit<span style="color:#f92672">.</span>timeit(<span style="color:#66d9ef">lambda</span>: read_csv(
+        <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.4449/dados?formato=csv&#39;</span>), number<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
 </code></pre></div><h2 id="python-média-performance">Python Média Performance</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">arquivo <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#39;pessoas.csv&#39;</span>)
 <span style="color:#66d9ef">for</span> registro <span style="color:#f92672">in</span> arquivo:
@@ -332,8 +344,8 @@ data_series <span style="color:#f92672">=</span> pd<span style="color:#f92672">.
     
     
     
-    <script src="/assets/js/main.min.4b7c799e41e8a9d0c99f21a1b07582ef40a58421fa1e8d0e64f757c2807e79c5.js" integrity="sha256-S3x5nkHoqdDJnyGhsHWC70ClhCH6Ho0OZPdXwoB&#43;ecU=" crossorigin="anonymous"></script>
-    <script src="/assets/js/custom.min.21d1b65b48adbed41de7ac42ee68e7f9e464985356770f7e0b877b89044eb469.js" integrity="sha256-IdG2W0itvtQd56xC7mjn&#43;eRkmFNWdw9&#43;C4d7iQROtGk=" crossorigin="anonymous"></script>
+    <script src="/assets/js/main.min.6ff0d57b7558f0225c80bade926a349330bc25d85e7ceff50d911f1156023c3e.js" integrity="sha256-b/DVe3VY8CJcgLrekmo0kzC8JdhefO/1DZEfEVYCPD4=" crossorigin="anonymous"></script>
+    <script src="/assets/js/custom.min.c8274a0cac0477f854e63f09626cc63858bb2bc9db8faecbb2834846952c7fd6.js" integrity="sha256-yCdKDKwEd/hU5j8JYmzGOFi7K8nbj67LsoNIRpUsf9Y=" crossorigin="anonymous"></script>
     
     <link href="https://fonts.googleapis.com/css?family=Roboto|Lato&display=swap" rel="stylesheet">
     
