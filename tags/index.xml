@@ -7,13 +7,40 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright &amp;#169; 2021 Cognition. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 07 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AI</title>
       <link>https://cognitionsh.github.io/tags/ai/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/tags/ai/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gTTS</title>
+      <link>https://cognitionsh.github.io/tags/gtts/</link>
+      <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/gtts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ocr</title>
+      <link>https://cognitionsh.github.io/tags/ocr/</link>
+      <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/ocr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://cognitionsh.github.io/tags/python/</link>
+      <pubDate>Mon, 07 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/python/</guid>
       <description></description>
     </item>
     
@@ -23,24 +50,6 @@
       <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/tags/csv/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>gTTS</title>
-      <link>https://cognitionsh.github.io/tags/gtts/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://cognitionsh.github.io/tags/gtts/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>ocr</title>
-      <link>https://cognitionsh.github.io/tags/ocr/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://cognitionsh.github.io/tags/ocr/</guid>
       <description></description>
     </item>
     
@@ -59,15 +68,6 @@
       <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/tags/pt_br/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>python</title>
-      <link>https://cognitionsh.github.io/tags/python/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://cognitionsh.github.io/tags/python/</guid>
       <description></description>
     </item>
     
