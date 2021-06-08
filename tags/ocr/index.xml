@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Cognition</title>
-    <link>https://cognitionsh.github.io/</link>
-    <description>Recent content on Cognition</description>
+    <title>ocr on Cognition</title>
+    <link>https://cognitionsh.github.io/tags/ocr/</link>
+    <description>Recent content in ocr on Cognition</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright &amp;#169; 2021 Cognition. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cognitionsh.github.io/tags/ocr/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Optical Character Recognition and Text to Speech</title>
       <link>https://cognitionsh.github.io/post/ocr-tts/</link>
@@ -15,15 +15,6 @@
       
       <guid>https://cognitionsh.github.io/post/ocr-tts/</guid>
       <description>&lt;p&gt;Optical Character Recognition is an approach aiming to recognize characters from images (mainly) in this way, thus making it easier to manipulate the text that has been recognized. Text to Speech refers to speech synthesis or an &amp;ldquo;artificial production of speech&amp;rdquo;.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Quatro Maneiras de Manipular Arquivo CSV em Python</title>
-      <link>https://cognitionsh.github.io/post/python-csv/</link>
-      <pubDate>Sat, 01 May 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://cognitionsh.github.io/post/python-csv/</guid>
-      <description>&lt;p&gt;Com o avanço da adoção da tecnologia para acelerar as pequisas na área cientifica, cada vez mais pessoas estão buscando formas otimizadas de manipular massa de dados (dataset, dataframe). Sendo assim nas próximas linhas irei abordar algumas maneiras de alcançar esse objetivo.&lt;/p&gt;</description>
     </item>
     
   </channel>
