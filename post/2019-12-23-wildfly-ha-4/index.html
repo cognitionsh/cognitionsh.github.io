@@ -214,17 +214,13 @@
 <p>We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</p>
 <p>So the first step is to test the creation of a new instance using JBoss CLI.</p>
 <p>Use the master host itself for these tests. Create a file called create-server.cli:</p>
-<p>{% highlight bash %}
-/host=slave0/server-config=server-marketing-7:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
-/host=slave0/server-config=server-marketing-7/system-property=jboss.node.name:add(value=node-marketing-7)
-/host=slave0/server-config=server-marketing-7/system-property=wildfly.balancer.name:add(value=marketing-lb)
-/host=slave0/server=server-marketing-7:start
-{% endhighlight %}</p>
-<p>After that runs via command line:</p>
-<p>{% highlight bash %}
-[root@server-domain ~]# sh /usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c &ndash;controller=10.0.0.68:9990 &ndash;user=admin &ndash;password=redhat &ndash;file=create-server.cli
-{% endhighlight %}</p>
-<p>The script creates a new WildFly instance (server-marketing-7) on slave0 and starts it immediately.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-7:add<span style="color:#f92672">(</span>auto-start<span style="color:#f92672">=</span>true,socket-binding-port-offset<span style="color:#f92672">=</span>400,group<span style="color:#f92672">=</span>marketing<span style="color:#f92672">)</span>
+/host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-7/system-property<span style="color:#f92672">=</span>jboss.node.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>node-marketing-7<span style="color:#f92672">)</span>
+/host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-7/system-property<span style="color:#f92672">=</span>wildfly.balancer.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>marketing-lb<span style="color:#f92672">)</span>
+/host<span style="color:#f92672">=</span>slave0/server<span style="color:#f92672">=</span>server-marketing-7:start
+</code></pre></div><p>After that runs via command line:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># sh /usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c --controller=10.0.0.68:9990 --user=admin --password=redhat --file=create-server.cli</span>
+</code></pre></div><p>The script creates a new WildFly instance (server-marketing-7) on slave0 and starts it immediately.</p>
 <p>Note that a few seconds later the instance is already available on the balancer and also the application will be deployed automatically. This gives us a very interesting scalability in our WildFly environment.</p>
 <p><img src="/static/201912-hawildfly-19.png" alt=""></p>
 <p><img src="/static/201912-hawildfly-20.png" alt=""></p>
@@ -238,302 +234,277 @@
 </ul>
 <p>For this purpose I will use the server: monitor.mmagnani.lab - 10.0.0.117</p>
 <p>The first step is to install Webhook.</p>
-<p>{% highlight bash %}
-[root@monitor ~]# cat /etc/redhat-release
-CentOS Linux release 7.7.1908 (Core)
-[root@monitor ~]# systemctl stop firewalld
-[root@monitor ~]# systemctl disable firewalld
-[root@monitor ~]# setenforce 0
-[root@monitor ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
-[root@monitor ~]# mkdir -p /usr/local/webhook
-[root@monitor ~]# wget <a href="https://github.com/adnanh/webhook/releases/download/2.6.11/webhook-linux-amd64.tar.gz">https://github.com/adnanh/webhook/releases/download/2.6.11/webhook-linux-amd64.tar.gz</a> -P /usr/local/webhook/
-[root@monitor ~]# cd /usr/local/webhook/
-[root@monitor ~]# tar -xzvf webhook-linux-amd64.tar.gz
-[root@monitor ~]# cd webhook-linux-amd64
-[root@monitor ~]# ls
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/redhat-release </span>
+CentOS Linux release 7.7.1908 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl stop firewalld</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl disable firewalld</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># setenforce 0</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># sed -i &#34;s/^SELINUX=enforcing/SELINUX=disabled/g&#34; /etc/selinux/config</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir -p /usr/local/webhook</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://github.com/adnanh/webhook/releases/download/2.6.11/webhook-linux-amd64.tar.gz -P /usr/local/webhook/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/local/webhook/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># tar -xzvf webhook-linux-amd64.tar.gz </span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd webhook-linux-amd64</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># ls</span>
 webhook
-[root@monitor ~]# pwd
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/webhook/webhook-linux-amd64
-{% endhighlight %}</p>
-<p>Now create the hooks.json file that will contain the action to take when any event happens:</p>
-<p>{% highlight bash %}
-[root@monitor ~]# pwd
+</code></pre></div><p>Now create the hooks.json file that will contain the action to take when any event happens:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/webhook/webhook-linux-amd64
-[root@monitor ~]# vi /usr/local/webhook/webhook-linux-amd64/hooks.json
-{% endhighlight %}
-{% highlight json %}
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /usr/local/webhook/webhook-linux-amd64/hooks.json</span>
+</code></pre></div><p>{% highlight json %}
 [
 {
 &ldquo;id&rdquo;: &ldquo;scale-wildfly&rdquo;,
 &ldquo;execute-command&rdquo;: &ldquo;/var/scripts/scale-wildfly.sh&rdquo;,
 &ldquo;command-working-directory&rdquo;: &ldquo;/var/webhook&rdquo;
 }
-]
-{% endhighlight %}</p>
-<p>Create the scale-wildfly.sh script that will actually contain JBoss CLI actions:</p>
-<p>{% highlight bash %}
+]</p>
+<pre><code>
+Create the scale-wildfly.sh script that will actually contain JBoss CLI actions:
+
+```shell
 [root@monitor ~]# mkdir -p /var/scripts/
 [root@monitor ~]# mkdir -p /var/webhook
 [root@monitor ~]# vi /var/scripts/scale-wildfly.sh
 #!/bin/bash
-/usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c &ndash;controller=10.0.0.68:9990  &laquo;EOF
+/usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c --controller=10.0.0.68:9990  &lt;&lt;EOF
 /host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
 /host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
 /host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
 /host=slave0/server=server-marketing-8:start
 EOF
 [root@monitor ~]# chmod +x /var/scripts/scale-wildfly.sh
-{% endhighlight %}</p>
-<p>We will need the client which in this case is the JBoss CLI. For simplicity I will just unzip WildFly&rsquo;s zip into a directory.</p>
-<p>{% highlight bash %}
-[root@monitor ~]# yum install java-1.8.0-openjdk-devel.x86_64 -y
-[root@monitor ~]# mkdir -p /usr/local/wildfly
-[root@monitor ~]# wget <a href="https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip">https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip</a> -P /usr/local/wildfly
-[root@monitor ~]# cd /usr/local/wildfly
-[root@monitor ~]# unzip wildfly-18.0.1.Final.zip
-{% endhighlight %}</p>
-<p>Now start webhook:</p>
-<p>{% highlight bash %}
-[root@monitor ~]# pwd
+</code></pre><p>We will need the client which in this case is the JBoss CLI. For simplicity I will just unzip WildFly&rsquo;s zip into a directory.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum install java-1.8.0-openjdk-devel.x86_64 -y</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir -p /usr/local/wildfly</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip -P /usr/local/wildfly</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /usr/local/wildfly</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># unzip wildfly-18.0.1.Final.zip</span>
+</code></pre></div><p>Now start webhook:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/webhook/webhook-linux-amd64
-[root@monitor ~]# ./webhook  -hooks hooks.json -verbose
-####TODO put this as a service script
-{% endhighlight %}</p>
-<p>It will start up on default port 9000 and will provide you with one HTTP endpoint: <a href="http://monitor.mmagnani.lab:9000/hooks/scale-wildfly">http://monitor.mmagnani.lab:9000/hooks/scale-wildfly</a></p>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># ./webhook  -hooks hooks.json -verbose</span>
+ <span style="color:#75715e">####TODO put this as a service script</span>
+</code></pre></div><p>It will start up on default port 9000 and will provide you with one HTTP endpoint: <a href="http://monitor.mmagnani.lab:9000/hooks/scale-wildfly">http://monitor.mmagnani.lab:9000/hooks/scale-wildfly</a></p>
 <p>By performing a simple HTTP GET or POST request to that endpoint, the specified script would be executed.</p>
-<p>{% highlight bash %}
-[webhook] 2019/12/27 17:25:59 [b23fed] incoming HTTP request from 10.0.0.114:52462
-[webhook] 2019/12/27 17:25:59 [b23fed] scale-wildfly got matched
-[webhook] 2019/12/27 17:25:59 [b23fed] error parsing body payload due to unsupported content type header:
-[webhook] 2019/12/27 17:25:59 [b23fed] scale-wildfly hook triggered successfully
-[webhook] 2019/12/27 17:25:59 200 | 232.132µs | monitor.mmagnani.lab:9000 | GET /hooks/scale-wildfly
-[webhook] 2019/12/27 17:25:59 [b23fed] executing /var/scripts/scale-wildfly.sh (/var/scripts/scale-wildfly.sh) with arguments [&quot;/var/scripts/scale-wildfly.sh&quot;] and environment [] using /var/webhook as cwd
-[webhook] 2019/12/27 17:26:02 [b23fed] command output: [domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server=server-marketing-8:start
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; &ldquo;STARTING&rdquo;
-}
-[domain@10.0.0.68:9990 /]
-{% endhighlight %}</p>
-<p>Note that the cluster was automatically escalated through a request using the endpoint.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> incoming HTTP request from 10.0.0.114:52462
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> scale-wildfly got matched
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> error parsing body payload due to unsupported content type header: 
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> scale-wildfly hook triggered successfully
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#ae81ff">200</span> | 232.132µs | monitor.mmagnani.lab:9000 | GET /hooks/scale-wildfly 
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:25:59 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> executing /var/scripts/scale-wildfly.sh <span style="color:#f92672">(</span>/var/scripts/scale-wildfly.sh<span style="color:#f92672">)</span> with arguments <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;/var/scripts/scale-wildfly.sh&#34;</span><span style="color:#f92672">]</span> and environment <span style="color:#f92672">[]</span> using /var/webhook as cwd
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/27 17:26:02 <span style="color:#f92672">[</span>b23fed<span style="color:#f92672">]</span> command output: <span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8:add<span style="color:#f92672">(</span>auto-start<span style="color:#f92672">=</span>true,socket-binding-port-offset<span style="color:#f92672">=</span>400,group<span style="color:#f92672">=</span>marketing<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8/system-property<span style="color:#f92672">=</span>jboss.node.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>node-marketing-8<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8/system-property<span style="color:#f92672">=</span>wildfly.balancer.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>marketing-lb<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server<span style="color:#f92672">=</span>server-marketing-8:start
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;STARTING&#34;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> 
+</code></pre></div><p>Note that the cluster was automatically escalated through a request using the endpoint.</p>
 <p><img src="/static/201912-hawildfly-21.png" alt=""></p>
 <p>Our goal was successfully achieved! The next step is to do this through AlertManager.</p>
 <p>So at this point we will install Prometheus.</p>
-<p>{% highlight bash %}
-[root@monitor ~]# cd /tmp
-[root@monitor ~]# wget <a href="https://github.com/prometheus/prometheus/releases/download/v2.15.1/prometheus-2.15.1.linux-amd64.tar.gz">https://github.com/prometheus/prometheus/releases/download/v2.15.1/prometheus-2.15.1.linux-amd64.tar.gz</a>
-[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false prometheus
-[root@monitor ~]# mkdir /etc/prometheus
-[root@monitor ~]# mkdir /var/lib/prometheus
-[root@monitor ~]# chown prometheus:prometheus /etc/prometheus
-[root@monitor ~]# chown prometheus:prometheus /var/lib/prometheus
-[root@monitor ~]# tar -xvzf tar prometheus-2.15.1.linux-amd64.tar.gz
-[root@monitor ~]# mv prometheus-2.15.1.linux-amd64 prometheus-package
-[root@monitor ~]# cp prometheus-package/prometheus /usr/local/bin/
-[root@monitor ~]# cp prometheus-package/promtool /usr/local/bin/
-[root@monitor ~]# chown prometheus:prometheus /usr/local/bin/prometheus
-[root@monitor ~]# chown prometheus:prometheus /usr/local/bin/promtool
-[root@monitor ~]# cp -r prometheus-package/consoles /etc/prometheus
-[root@monitor ~]# cp -r prometheus-package/console_libraries /etc/prometheus
-[root@monitor ~]# chown -R prometheus:prometheus /etc/prometheus/consoles
-[root@monitor ~]# chown -R prometheus:prometheus /etc/prometheus/console_libraries
-[root@monitor ~]# vi /etc/prometheus/prometheus.yml</p>
-<p>global:
-scrape_interval: 10s</p>
-<p>scrape_configs:</p>
-<ul>
-<li>job_name: &lsquo;prometheus_master&rsquo;
-scrape_interval: 5s
-static_configs:
-<ul>
-<li>targets: [&lsquo;localhost:9090&rsquo;]</li>
-</ul>
-</li>
-</ul>
-<p>[root@monitor ~]# chown prometheus:prometheus /etc/prometheus/prometheus.yml
-[root@monitor ~]# vi /etc/systemd/system/prometheus.service</p>
-<p>[Unit]
-Description=Prometheus
-Wants=network-online.target
-After=network-online.target</p>
-<p>[Service]
-User=prometheus
-Group=prometheus
-Type=simple
-ExecStart=/usr/local/bin/prometheus &ndash;config.file /etc/prometheus/prometheus.yml &ndash;storage.tsdb.path /var/lib/prometheus &ndash;web.console.templates=/etc/prometheus/consoles &ndash;web.console.libraries=/etc/prometheus/console_libraries</p>
-<p>[Install]
-WantedBy=multi-user.target</p>
-<p>[root@monitor ~]# systemctl daemon-reload
-[root@monitor ~]# systemctl start prometheus
-[root@monitor ~]# systemctl status prometheus
-{% endhighlight %}</p>
-<p>Use the following Url to access UI: <a href="http://monitor.mmagnani.lab:9090">http://monitor.mmagnani.lab:9090</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /tmp</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://github.com/prometheus/prometheus/releases/download/v2.15.1/prometheus-2.15.1.linux-amd64.tar.gz</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># useradd --no-create-home --shell /bin/false prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir /etc/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir /var/lib/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /etc/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /var/lib/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># tar -xvzf tar prometheus-2.15.1.linux-amd64.tar.gz</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mv prometheus-2.15.1.linux-amd64 prometheus-package</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp prometheus-package/prometheus /usr/local/bin/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp prometheus-package/promtool /usr/local/bin/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /usr/local/bin/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /usr/local/bin/promtool</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp -r prometheus-package/consoles /etc/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp -r prometheus-package/console_libraries /etc/prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown -R prometheus:prometheus /etc/prometheus/consoles</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown -R prometheus:prometheus /etc/prometheus/console_libraries</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/prometheus/prometheus.yml</span>
+
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: <span style="color:#e6db74">&#39;prometheus_master&#39;</span>
+    scrape_interval: 5s
+    static_configs:
+      - targets: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;localhost:9090&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /etc/prometheus/prometheus.yml</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/systemd/system/prometheus.service</span>
+
+<span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+Description<span style="color:#f92672">=</span>Prometheus
+Wants<span style="color:#f92672">=</span>network-online.target
+After<span style="color:#f92672">=</span>network-online.target
+
+<span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+User<span style="color:#f92672">=</span>prometheus
+Group<span style="color:#f92672">=</span>prometheus
+Type<span style="color:#f92672">=</span>simple
+ExecStart<span style="color:#f92672">=</span>/usr/local/bin/prometheus --config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus --web.console.templates<span style="color:#f92672">=</span>/etc/prometheus/consoles --web.console.libraries<span style="color:#f92672">=</span>/etc/prometheus/console_libraries
+
+<span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+WantedBy<span style="color:#f92672">=</span>multi-user.target
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl daemon-reload</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl start prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl status prometheus</span>
+</code></pre></div><p>Use the following Url to access UI: <a href="http://monitor.mmagnani.lab:9090">http://monitor.mmagnani.lab:9090</a></p>
 <p><img src="/static/201912-hawildfly-22.png" alt=""></p>
 <p>Now let&rsquo;s install the blackbox exporter. The blackbox exporter allows blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP and ICMP.</p>
-<p>{% highlight bash %}
-[root@monitor ~]# cd /tmp
-[root@monitor ~]# wget <a href="https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz">https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz</a>
-[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false blackbox_exporter
-[root@monitor ~]# tar -xvf blackbox_exporter-0.16.0.linux-amd64.tar.gz
-[root@monitor ~]# cp blackbox_exporter-0.16.0.linux-amd64/blackbox_exporter /usr/local/bin/blackbox_exporter
-[root@monitor ~]# chown blackbox_exporter:blackbox_exporter /usr/local/bin/blackbox_exporter
-[root@monitor ~]# mkdir /etc/blackbox_exporter
-[root@monitor ~]# vi /etc/blackbox_exporter/blackbox.yml</p>
-<p>modules:
-http_2xx:
-prober: http
-timeout: 5s
-http:
-valid_status_codes: []
-method: GET</p>
-<p>[root@monitor ~]# chown blackbox_exporter:blackbox_exporter /etc/blackbox_exporter/blackbox.yml
-[root@monitor ~]# vi /etc/systemd/system/blackbox_exporter.service</p>
-<p>[Unit]
-Description=Blackbox Exporter
-Wants=network-online.target
-After=network-online.target</p>
-<p>[Service]
-User=blackbox_exporter
-Group=blackbox_exporter
-Type=simple
-ExecStart=/usr/local/bin/blackbox_exporter &ndash;config.file /etc/blackbox_exporter/blackbox.yml</p>
-<p>[Install]
-WantedBy=multi-user.target</p>
-<p>[root@monitor ~]# systemctl daemon-reload
-[root@monitor ~]# systemctl start blackbox_exporter
-[root@monitor ~]# systemctl enable blackbox_exporter
-{% endhighlight %}</p>
-<p>Now edit the Prometheus configuration and add our target:</p>
-<p>{% highlight bash %}
-[root@monitor ~]# vi /etc/prometheus/prometheus.yml</p>
-<ul>
-<li>job_name: &lsquo;blackbox-marketing&rsquo;
-metrics_path: /probe
-params:
-module: [http_2xx]
-static_configs:
-<ul>
-<li>targets:
-<ul>
-<li><a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a>
-relabel_configs:</li>
-</ul>
-</li>
-<li>source_labels: [<strong>address</strong>]
-target_label: __param_target</li>
-<li>source_labels: [__param_target]
-target_label: instance</li>
-<li>target_label: <strong>address</strong>
-replacement: localhost:9115</li>
-</ul>
-</li>
-</ul>
-<p>[root@monitor ~]# systemctl restart prometheus
-{% endhighlight %}</p>
-<p>Create a alarm definition:</p>
-<p>{% highlight bash %}
-[root@monitor ~]# vi /etc/prometheus/prometheus.rules.yml</p>
-<p>groups:</p>
-<ul>
-<li>name: alert.rules
-rules:
-<ul>
-<li>alert: EndpointDown
-expr: probe_success == 0
-for: 10s
-labels:
-severity: &ldquo;critical&rdquo;
-annotations:
-summary: &ldquo;Endpoint  down&rdquo;</li>
-</ul>
-</li>
-</ul>
-<p>[root@monitor ~]# chown prometheus:prometheus /etc/prometheus/prometheus.rules.yml
-[root@monitor ~]# promtool check rules /etc/prometheus/prometheus.rules.yml
-[root@monitor ~]# systemctl restart prometheus
-{% endhighlight %}</p>
-<p>Please note that the Prometheus Target definitions already display our probe:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /tmp</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># useradd --no-create-home --shell /bin/false blackbox_exporter</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># tar -xvf blackbox_exporter-0.16.0.linux-amd64.tar.gz</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp blackbox_exporter-0.16.0.linux-amd64/blackbox_exporter /usr/local/bin/blackbox_exporter</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown blackbox_exporter:blackbox_exporter /usr/local/bin/blackbox_exporter</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir /etc/blackbox_exporter</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/blackbox_exporter/blackbox.yml</span>
+
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: <span style="color:#f92672">[]</span>
+      method: GET
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown blackbox_exporter:blackbox_exporter /etc/blackbox_exporter/blackbox.yml</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/systemd/system/blackbox_exporter.service</span>
+
+<span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+Description<span style="color:#f92672">=</span>Blackbox Exporter
+Wants<span style="color:#f92672">=</span>network-online.target
+After<span style="color:#f92672">=</span>network-online.target
+
+<span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+User<span style="color:#f92672">=</span>blackbox_exporter
+Group<span style="color:#f92672">=</span>blackbox_exporter
+Type<span style="color:#f92672">=</span>simple
+ExecStart<span style="color:#f92672">=</span>/usr/local/bin/blackbox_exporter --config.file /etc/blackbox_exporter/blackbox.yml
+
+<span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+WantedBy<span style="color:#f92672">=</span>multi-user.target
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl daemon-reload</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl start blackbox_exporter</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable blackbox_exporter</span>
+</code></pre></div><p>Now edit the Prometheus configuration and add our target:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/prometheus/prometheus.yml</span>
+
+  - job_name: <span style="color:#e6db74">&#39;blackbox-marketing&#39;</span>
+    metrics_path: /probe
+    params:
+      module: <span style="color:#f92672">[</span>http_2xx<span style="color:#f92672">]</span>
+    static_configs:
+      - targets:
+        - http://marketing.mmagnani.lab
+    relabel_configs:
+      - source_labels: <span style="color:#f92672">[</span>__address__<span style="color:#f92672">]</span>
+        target_label: __param_target
+      - source_labels: <span style="color:#f92672">[</span>__param_target<span style="color:#f92672">]</span>
+        target_label: instance
+      - target_label: __address__
+        replacement: localhost:9115
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart prometheus</span>
+</code></pre></div><p>Create a alarm definition:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/prometheus/prometheus.rules.yml</span>
+
+groups:
+- name: alert.rules
+  rules:
+  - alert: EndpointDown
+    expr: probe_success <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span>: 10s
+    labels:
+      severity: <span style="color:#e6db74">&#34;critical&#34;</span>
+    annotations:
+      summary: <span style="color:#e6db74">&#34;Endpoint  down&#34;</span>
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown prometheus:prometheus /etc/prometheus/prometheus.rules.yml</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># promtool check rules /etc/prometheus/prometheus.rules.yml</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart prometheus</span>
+</code></pre></div><p>Please note that the Prometheus Target definitions already display our probe:</p>
 <p><img src="/static/201912-hawildfly-23.png" alt=""></p>
 <p>Finally install AlertManager.</p>
-<p>{% highlight bash %}
-[root@monitor ~]# cd /tmp
-[root@monitor ~]# wget <a href="https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz">https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz</a>
-[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false alertmanager
-[root@monitor ~]# tar -xvf alertmanager-0.20.0.linux-amd64.tar.gz
-[root@monitor ~]# cp alertmanager-0.20.0.linux-amd64/alertmanager /usr/local/bin/
-[root@monitor ~]# cp alertmanager-0.20.0.linux-amd64/amtool /usr/local/bin/
-[root@monitor ~]# chown alertmanager:alertmanager /usr/local/bin/alertmanager
-[root@monitor ~]# chown alertmanager:alertmanager /usr/local/bin/amtool
-[root@monitor ~]# mkdir /etc/alertmanager
-[root@monitor ~]# vi /etc/alertmanager/alertmanager.yml</p>
-<p>global:</p>
-<p>route:
-group_by: [&lsquo;instance&rsquo;, &lsquo;alert&rsquo;]
-group_wait: 30s
-group_interval: 5m
-repeat_interval: 3h
-receiver: default-receiver</p>
-<p>receivers:</p>
-<ul>
-<li>name: default-receiver
-webhook_configs:
-<ul>
-<li>url: &ldquo;<a href="http://monitor.mmagnani.lab:9000/hooks/scale-wildfly%22">http://monitor.mmagnani.lab:9000/hooks/scale-wildfly&quot;</a></li>
-</ul>
-</li>
-</ul>
-<p>[root@monitor ~]# chown alertmanager:alertmanager -R /etc/alertmanager
-[root@monitor ~]# vi /etc/systemd/system/alertmanager.service</p>
-<p>[Unit]
-Description=Alertmanager
-Wants=network-online.target
-After=network-online.target</p>
-<p>[Service]
-User=alertmanager
-Group=alertmanager
-Type=simple
-WorkingDirectory=/etc/alertmanager/
-ExecStart=/usr/local/bin/alertmanager &ndash;config.file=/etc/alertmanager/alertmanager.yml &ndash;web.external-url http://0.0.0.0:9093</p>
-<p>[Install]
-WantedBy=multi-user.target</p>
-<p>[root@monitor ~]# vi /etc/prometheus/prometheus.yml
-rule_files:</p>
-<ul>
-<li>&lsquo;prometheus.rules.yml&rsquo;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /tmp</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># useradd --no-create-home --shell /bin/false alertmanager</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># tar -xvf alertmanager-0.20.0.linux-amd64.tar.gz </span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp alertmanager-0.20.0.linux-amd64/alertmanager /usr/local/bin/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp alertmanager-0.20.0.linux-amd64/amtool /usr/local/bin/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown alertmanager:alertmanager /usr/local/bin/alertmanager</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown alertmanager:alertmanager /usr/local/bin/amtool</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir /etc/alertmanager</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/alertmanager/alertmanager.yml</span>
+
+global:
+
+route:
+  group_by: <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;instance&#39;</span>, <span style="color:#e6db74">&#39;alert&#39;</span><span style="color:#f92672">]</span>
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: default-receiver
+
+receivers:
+  - name: default-receiver
+    webhook_configs:
+      - url: <span style="color:#e6db74">&#34;http://monitor.mmagnani.lab:9000/hooks/scale-wildfly&#34;</span>
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chown alertmanager:alertmanager -R /etc/alertmanager</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/systemd/system/alertmanager.service</span>
+
+<span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+Description<span style="color:#f92672">=</span>Alertmanager
+Wants<span style="color:#f92672">=</span>network-online.target
+After<span style="color:#f92672">=</span>network-online.target
+
+<span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+User<span style="color:#f92672">=</span>alertmanager
+Group<span style="color:#f92672">=</span>alertmanager
+Type<span style="color:#f92672">=</span>simple
+WorkingDirectory<span style="color:#f92672">=</span>/etc/alertmanager/
+ExecStart<span style="color:#f92672">=</span>/usr/local/bin/alertmanager --config.file<span style="color:#f92672">=</span>/etc/alertmanager/alertmanager.yml --web.external-url http://0.0.0.0:9093
+
+<span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+WantedBy<span style="color:#f92672">=</span>multi-user.target
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/prometheus/prometheus.yml</span>
+rule_files:
+  - <span style="color:#e6db74">&#39;prometheus.rules.yml&#39;</span>
 alerting:
-alertmanagers:</li>
-<li>static_configs:
-<ul>
-<li>targets:
-<ul>
-<li>localhost:9093</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>[root@monitor ~]# systemctl restart prometheus
-[root@monitor ~]# systemctl restart alertmanager
-{% endhighlight %}</p>
-<p>Note that the alert will be inactive: <a href="http://monitor.mmagnani.lab:9090/alerts">http://monitor.mmagnani.lab:9090/alerts</a></p>
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart prometheus</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart alertmanager</span>
+</code></pre></div><p>Note that the alert will be inactive: <a href="http://monitor.mmagnani.lab:9090/alerts">http://monitor.mmagnani.lab:9090/alerts</a></p>
 <p><img src="/static/201912-hawildfly-24.png" alt=""></p>
 <p>Check the AlertManager: <a href="http://monitor.mmagnani.lab:9093/#/alerts">http://monitor.mmagnani.lab:9093/#/alerts</a></p>
 <p><img src="/static/201912-hawildfly-25.png" alt=""></p>
@@ -543,39 +514,37 @@ alertmanagers:</li>
 <p><img src="/static/201912-hawildfly-27.png" alt=""></p>
 <p><img src="/static/201912-hawildfly-28.png" alt=""></p>
 <p>Our endpoint that performs environment scaling will be triggered:</p>
-<p>{% highlight bash %}
-[webhook] 2019/12/29 19:55:33 [5f95ff] incoming HTTP request from 10.0.0.117:38598
-[webhook] 2019/12/29 19:55:33 [5f95ff] scale-wildfly got matched
-[webhook] 2019/12/29 19:55:33 [5f95ff] scale-wildfly hook triggered successfully
-[webhook] 2019/12/29 19:55:33 200 | 130.171µs | monitor.mmagnani.lab:9000 | POST /hooks/scale-wildfly
-[webhook] 2019/12/29 19:55:33 [5f95ff] executing /var/scripts/scale-wildfly.sh (/var/scripts/scale-wildfly.sh) with arguments [&quot;/var/scripts/scale-wildfly.sh&rdquo;] and environment [] using /var/webhook as cwd
-[webhook] 2019/12/29 19:55:36 [5f95ff] command output: [domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=500,group=marketing)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; undefined,
-&ldquo;server-groups&rdquo; =&gt; undefined
-}
-[domain@10.0.0.68:9990 /] /host=slave0/server=server-marketing-8:start
-{
-&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
-&ldquo;result&rdquo; =&gt; &ldquo;STARTING&rdquo;
-}
-[domain@10.0.0.68:9990 /]
-[webhook] 2019/12/29 19:55:36 [5f95ff] finished handling scale-wildfly
-{% endhighlight %}</p>
-<p>A new instance has been created and our application is available again:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:33 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> incoming HTTP request from 10.0.0.117:38598
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:33 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> scale-wildfly got matched
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:33 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> scale-wildfly hook triggered successfully
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:33 <span style="color:#ae81ff">200</span> | 130.171µs | monitor.mmagnani.lab:9000 | POST /hooks/scale-wildfly 
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:33 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> executing /var/scripts/scale-wildfly.sh <span style="color:#f92672">(</span>/var/scripts/scale-wildfly.sh<span style="color:#f92672">)</span> with arguments <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;/var/scripts/scale-wildfly.sh&#34;</span><span style="color:#f92672">]</span> and environment <span style="color:#f92672">[]</span> using /var/webhook as cwd
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:36 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> command output: <span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8:add<span style="color:#f92672">(</span>auto-start<span style="color:#f92672">=</span>true,socket-binding-port-offset<span style="color:#f92672">=</span>500,group<span style="color:#f92672">=</span>marketing<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8/system-property<span style="color:#f92672">=</span>jboss.node.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>node-marketing-8<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-8/system-property<span style="color:#f92672">=</span>wildfly.balancer.name:add<span style="color:#f92672">(</span>value<span style="color:#f92672">=</span>marketing-lb<span style="color:#f92672">)</span>
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; undefined,
+    <span style="color:#e6db74">&#34;server-groups&#34;</span> <span style="color:#f92672">=</span>&gt; undefined
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> /host<span style="color:#f92672">=</span>slave0/server<span style="color:#f92672">=</span>server-marketing-8:start
+<span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;outcome&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;success&#34;</span>,
+    <span style="color:#e6db74">&#34;result&#34;</span> <span style="color:#f92672">=</span>&gt; <span style="color:#e6db74">&#34;STARTING&#34;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>domain@10.0.0.68:9990 /<span style="color:#f92672">]</span> 
+<span style="color:#f92672">[</span>webhook<span style="color:#f92672">]</span> 2019/12/29 19:55:36 <span style="color:#f92672">[</span>5f95ff<span style="color:#f92672">]</span> finished handling scale-wildfly
+</code></pre></div><p>A new instance has been created and our application is available again:</p>
 <p><img src="/static/201912-hawildfly-29.png" alt=""></p>
 <p><img src="/static/201912-hawildfly-30.png" alt=""></p>
 <p>With this we have met our goal of having an elastic, scaling environment automatically based on events.</p>

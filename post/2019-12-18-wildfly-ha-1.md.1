@@ -75,7 +75,7 @@ These steps must be performed on both Apache Web Servers:
 
 Apache Web Server - apache-httpd-01.mmagnani.lab
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# cat /etc/redhat-release 
 CentOS Linux release 8.2.2004 (Core)
 [root@apache-httpd-01 ~]# dnf update -y
@@ -89,11 +89,11 @@ CentOS Linux release 8.2.2004 (Core)
 [root@apache-httpd-01 ~]# dnf install keepalived -y
 [root@apache-httpd-01 ~]# systemctl enable keepalived
 [root@apache-httpd-01 ~]# rm -Rf /etc/keepalived/keepalived.conf
-{% endhighlight %}
+```
 
 Edit the file and leave it as below (replace as per your settings).
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# vi /etc/keepalived/keepalived.conf
 ### Active Server
 vrrp_script chk_httpd {
@@ -129,11 +129,11 @@ vrrp_instance VI_1 {
 }
 [root@apache-httpd-01 ~]# systemctl restart httpd 
 [root@apache-httpd-01 ~]# systemctl restart keepalived 
-{% endhighlight %}
+```
 
 Apache Web Server - apache-httpd-02.mmagnani.lab
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-02 ~]# cat /etc/redhat-release 
 CentOS Linux release 8.2.2004 (Core)
 [root@apache-httpd-02 ~]# dnf update -y
@@ -147,11 +147,11 @@ CentOS Linux release 8.2.2004 (Core)
 [root@apache-httpd-02 ~]# dnf install keepalived -y
 [root@apache-httpd-02 ~]# systemctl enable keepalived
 [root@apache-httpd-02 ~]# rm -Rf /etc/keepalived/keepalived.conf
-{% endhighlight %}
+```
 
 Edit the file and leave it as below (replace as per your settings).
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-02 ~]# vi /etc/keepalived/keepalived.conf
 ### Passive Server
 vrrp_script chk_httpd {
@@ -187,7 +187,7 @@ vrrp_instance VI_1 {
 }
 [root@apache-httpd-02 ~]# systemctl restart httpd 
 [root@apache-httpd-02 ~]# systemctl restart keepalived 
-{% endhighlight %}
+```
 
 Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note that the request was directed to Apache Web Server 01.
 
@@ -195,9 +195,9 @@ Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note
 
 For a quick test, turn off Apache Web Server 01 and see that our backup server is now responding.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# shutdown now
-{% endhighlight %}
+```
 
 ![](/images/201912-hawildfly-04.png)
 
@@ -207,7 +207,7 @@ Next we'll start Mod_cluster configuration and plug it in WildFly.
 
 The best way to get updated binaries for CentoS 8 is by compiling. I know this can cause some stress but follow the steps below that everything will be very simple.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# dnf install git make cmake gcc gcc-c++ apr-util apr-devel apr-util-devel httpd-devel -y
 [root@apache-httpd-01 ~]# cd /tmp
 [root@apache-httpd-01 ~]# git clone https://github.com/modcluster/mod_cluster.git
@@ -218,45 +218,45 @@ The best way to get updated binaries for CentoS 8 is by compiling. I know this c
 [root@apache-httpd-01 ~]# cd build
 [root@apache-httpd-01 build]# cmake ../ -G "Unix Makefiles"
 [root@apache-httpd-01 build]# make
-{% endhighlight %}
+```
 
 Copy the newly built modules to the Apache Web Server module directory:
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# pwd
 /tmp/mod_proxy_cluster/native/build
 [root@apache-httpd-01 ~]# cp modules/mod_proxy_cluster.so /etc/httpd/modules/
 [root@apache-httpd-01 ~]# cp modules/mod_cluster_slotmem.so /etc/httpd/modules/
 [root@apache-httpd-01 ~]# cp modules/mod_manager.so /etc/httpd/modules/
 [root@apache-httpd-01 ~]# cp modules/mod_advertise.so /etc/httpd/modules/
-{% endhighlight %}
+```
 
 These same files must be copied to the Apache Web Server 02 module directory.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# scp modules/mod_cluster_slotmem.so root@10.0.0.192:/etc/httpd/modules/
 [root@apache-httpd-01 ~]# scp modules/mod_proxy_cluster.so root@10.0.0.192:/etc/httpd/modules/
 [root@apache-httpd-01 ~]# scp modules/mod_manager.so root@10.0.0.192:/etc/httpd/modules/
 [root@apache-httpd-01 ~]# scp modules/mod_advertise.so root@10.0.0.192:/etc/httpd/modules/
-{% endhighlight %}
+```
 
 The mod_proxy_balancer should be disabled when mod_cluster is used. To do this simply on Apache Web Server 01 edit the 00-proxy.conf  file and comment the line referring to this module.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
 #LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-{% endhighlight %}
+```
 
 Do the same for Apache Web Server 02:
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-02 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
 #LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-{% endhighlight %}
+```
 
 Now is the time to create the Mod_Cluster configuration file. On Apache Web Server 01 create the file mod_cluster.conf and add the configuration information:
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# vi /etc/httpd/conf.d/mod_cluster.conf
 LoadModule proxy_cluster_module modules/mod_proxy_cluster.so
 LoadModule cluster_slotmem_module modules/mod_cluster_slotmem.so
@@ -297,23 +297,23 @@ MemManagerFile cache/mod_cluster
 
   </VirtualHost>
 </IfModule>
-{% endhighlight %}
+```
 
 Now copy the file to Apache Web Server 02.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# scp /etc/httpd/conf.d/mod_cluster.conf root@10.0.0.192:/etc/httpd/conf.d/
-{% endhighlight %}
+```
 
 reboot both servers to make sure everything is going up correctly.
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-01 ~]# reboot
-{% endhighlight %}
+```
 
-{% highlight bash %}
+```shell
 [root@apache-httpd-02 ~]# reboot
-{% endhighlight %}
+```
 
 Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.
 

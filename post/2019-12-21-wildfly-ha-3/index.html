@@ -160,7 +160,7 @@ The first step will be to add two new properties to our WildFly instances.">
               
             
               
-            By Mauricio Magnani &#183; 9 min read</div>
+            By Mauricio Magnani &#183; 8 min read</div>
           
           
           
@@ -213,12 +213,10 @@ The first step will be to add two new properties to our WildFly instances.">
 <h2 id="wildfly-with-mod-cluster">WildFly with Mod Cluster</h2>
 <p>If you followed the previous articles, you will now have Apach Web Server HA in your environment as well as WildFly running in Domain Mode with four WildFly instances.</p>
 <p>The first step will be to add two new properties to our WildFly instances. The properties must be added within each instance (server). So let&rsquo;s start by editing the host-slave.xml file in &ldquo;Subordinate 0&rdquo;.</p>
-<p>{% highlight bash %}
-[root@server-subordinate-0 ~]# pwd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-subordinate-0 ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/wildfly/wildfly-20.0.0.Final
-[root@server-subordinate-0 ~]# vim subordinate0/configuration/host-slave.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+<span style="color:#f92672">[</span>root@server-subordinate-0 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vim subordinate0/configuration/host-slave.xml </span>
+</code></pre></div><p>{% highlight xml %}
 ##around line 89
 <servers>
 <server name="server-marketing-0" group="marketing">
@@ -235,15 +233,15 @@ The first step will be to add two new properties to our WildFly instances.">
 <socket-bindings port-offset="100"/>
 </server>
 </servers>
-##suppressed
-{% endhighlight %}</p>
-<p>Now perform the same procedure for &ldquo;Subordinate 1&rdquo;.</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+Now perform the same procedure for &quot;Subordinate 1&quot;.
+
+```shell
 [root@server-subordinate-1 ~]# pwd
 /usr/local/wildfly/wildfly-20.0.0.Final
-[root@server-subordinate-1 ~]# vim subordinate1/configuration/host-slave.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+[root@server-subordinate-1 ~]# vim subordinate1/configuration/host-slave.xml 
+</code></pre><p>{% highlight xml %}
 ##around line 89
 <servers>
 <server name="server-marketing-1" group="marketing">
@@ -260,84 +258,69 @@ The first step will be to add two new properties to our WildFly instances.">
 <socket-bindings port-offset="100"/>
 </server>
 </servers>
-##suppressed
-{% endhighlight %}</p>
-<p>As you may have noticed, every configuration of the technologies available in WildFly is done  in the &ldquo;Master&rdquo;. Remember that we currently have two groups &ldquo;marketing&rdquo; and &ldquo;accounting&rdquo; that are using the profile &ldquo;full-ha&rdquo; and socket-binding &ldquo;full-ha-sockets&rdquo;.</p>
-<p>Then in the &ldquo;Master&rdquo; edit the domain.xml file and add a new socket with our VIP defined in chapter I.</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+As you may have noticed, every configuration of the technologies available in WildFly is done  in the &quot;Master&quot;. Remember that we currently have two groups &quot;marketing&quot; and &quot;accounting&quot; that are using the profile &quot;full-ha&quot; and socket-binding &quot;full-ha-sockets&quot;.
+
+Then in the &quot;Master&quot; edit the domain.xml file and add a new socket with our VIP defined in chapter I.
+
+```shell
 [root@server-domain ~]# pwd
 /usr/local/wildfly/wildfly-20.0.0.Final
-[root@server-domain ~]# vim master/configuration/domain.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+[root@server-domain ~]# vim master/configuration/domain.xml 
+</code></pre><p>{% highlight xml %}
 ##around line 1883 // full-ha-sockets
 <outbound-socket-binding name="proxy">
 <remote-destination host="10.0.0.190" port="9090"/>
 </outbound-socket-binding>
-##suppressed
-{% endhighlight %}</p>
-<p>Within the &ldquo;full-ha&rdquo; profile edit the modcluster subsystem and add the instance-id and balancer properties.</p>
-<p>{% highlight xml %}
+##suppressed</p>
+<pre><code>
+Within the &quot;full-ha&quot; profile edit the modcluster subsystem and add the instance-id and balancer properties.
+
+{% highlight xml %}
 ##around line 1661 // profile full-ha
-<proxy name="default" advertise-socket="modcluster" listener="ajp" proxies="proxy" balancer="${wildfly.balancer.name}">
+        &lt;proxy name=&quot;default&quot; advertise-socket=&quot;modcluster&quot; listener=&quot;ajp&quot; proxies=&quot;proxy&quot; balancer=&quot;${wildfly.balancer.name}&quot;&gt;
 ##suppressed
-{% endhighlight %}</p>
-<p>Restart the wildfly service on the master and then on the subordinates.</p>
-<p>{% highlight bash %}
-[root@server-domain ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-subordinate-0 ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-subordinate-1 ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>Access the VIP IP on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. See that our instances are now connected and ready to use:</p>
+</code></pre><p>Restart the wildfly service on the master and then on the subordinates.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-subordinate-0 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-subordinate-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><p>Access the VIP IP on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. See that our instances are now connected and ready to use:</p>
 <p><img src="/static/201912-hawildfly-12.gif" alt=""></p>
 <p>Deploy the <a href="https://github.com/msmagnanijr/mlab-run-blog-files/blob/master/wildfly-ha/cluster.war">cluster.war</a> application. Open the management console and go to &ldquo;deployments&rdquo; &ndash;&gt; &ldquo;content-repository&rdquo; and upload the application. After that &ldquo;deploy&rdquo; &ndash;&gt; &ldquo;Deploy Content&rdquo; &ndash;&gt; choose &ldquo;marketing&rdquo; server group.</p>
 <p>If the application is successfully deployed, you will see the context in &ldquo;mod_cluster_manager&rdquo;: http://10.0.0.190:9090/mod_cluster_manager</p>
 <p><img src="/static/201912-hawildfly-13.gif" alt=""></p>
 <p>If you try to access the &ldquo;application context&rdquo; (http://10.0.0.190/cluster) through VIP you will get a 404 because the virtual host for that application has not yet been configured.</p>
 <p>So now let&rsquo;s create a new virtual host to make the application that was deployed in the &ldquo;marketing&rdquo; group available through VIP.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# vim /etc/httpd/conf.d/virtual_host.conf
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/httpd/conf.d/virtual_host.conf</span>
 &lt;VirtualHost *:80&gt;
-ServerName marketing.mmagnani.lab
-ProxyPass        / balancer://marketing-lb/ stickysession=JSESSIONID|jsessionid nofailover=On
-ProxyPassReverse / balancer://marketing-lb/
-</VirtualHost>
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@apache-httpd-02 ~]# vi /etc/httpd/conf.d/virtual_host.conf
+    ServerName marketing.mmagnani.lab
+    ProxyPass        / balancer://marketing-lb/ stickysession<span style="color:#f92672">=</span>JSESSIONID|jsessionid nofailover<span style="color:#f92672">=</span>On
+    ProxyPassReverse / balancer://marketing-lb/
+&lt;/VirtualHost&gt;
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/httpd/conf.d/virtual_host.conf</span>
 &lt;VirtualHost *:80&gt;
-ServerName marketing.mmagnani.lab
-ProxyPass        / balancer://marketing-lb/ stickysession=JSESSIONID|jsessionid nofailover=On
-ProxyPassReverse / balancer://marketing-lb/
-</VirtualHost>
-{% endhighlight %}</p>
-<p>Add an entry in your DNS for the name &ldquo;marketing.mmagnani.lab&rdquo; pointing to the VIP which in this case is 10.0.0.190.</p>
+    ServerName marketing.mmagnani.lab
+    ProxyPass        / balancer://marketing-lb/ stickysession<span style="color:#f92672">=</span>JSESSIONID|jsessionid nofailover<span style="color:#f92672">=</span>On
+    ProxyPassReverse / balancer://marketing-lb/
+&lt;/VirtualHost&gt;
+</code></pre></div><p>Add an entry in your DNS for the name &ldquo;marketing.mmagnani.lab&rdquo; pointing to the VIP which in this case is 10.0.0.190.</p>
 <p>In the &ldquo;Master&rdquo; edit the domain.xml file and update the default virtual host on undertow subsystem.</p>
-<p>{% highlight bash %}
-[root@server-domain ~]# pwd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/wildfly/wildfly-20.0.0.Final
-[root@server-domain ~]# vim master/configuration/domain.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+<span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># vim master/configuration/domain.xml </span>
+</code></pre></div><p>{% highlight xml %}
 ##around line 1739
 <host name="default-host" alias="marketing.mmagnani.lab" default-web-module="cluster.war" />
-##suppressed
-{% endhighlight %}</p>
-<p>Restart the wildfly service on the master and then on the subordinates.</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+Restart the wildfly service on the master and then on the subordinates.
+
+```shell
 [root@server-domain ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-subordinate-0 ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-subordinate-1 ~]#  systemctl restart wildfly
-{% endhighlight %}</p>
-<p>Finally open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-subordinate-0 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-subordinate-1 ~<span style="color:#f92672">]</span><span style="color:#75715e">#  systemctl restart wildfly</span>
+</code></pre></div><p>Finally open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
 <p><img src="/static/201912-hawildfly-14.png" alt=""></p>
 <p>This way our applications will respond via virtual host/VIP. So let&rsquo;s test the high availability of the application.</p>
 <p>The request has been redirected to server &ldquo;server-marketing-0&rdquo;. So go to &ldquo;Runtime&rdquo; &ndash;&gt; &ldquo;Hosts&rdquo; &ndash;&gt; &ldquo;slave0&rdquo; and stop &ldquo;server-marketing-0&rdquo;.</p>
@@ -348,12 +331,10 @@ ProxyPassReverse / balancer://marketing-lb/
 <p>Unfortunately the session was not maintained, this is because we have not configured our cluster yet. So in the next step we will configure the cluster with JGroups/TCPPing.</p>
 <h2 id="wildfly-and-tcpping">WildFly and TCPPING</h2>
 <p>The first step is to set up a new &ldquo;stack&rdquo; in the profile we are using, which in this case is &ldquo;full-ha&rdquo;. For this in &ldquo;Master&rdquo; host edit the file domain.xml and add the new configuration:</p>
-<p>{% highlight bash %}
-[root@server-domain ~]# pwd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/wildfly/wildfly-18.0.1.Final
-[root@server-domain ~]# vi master/configuration/domain.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+<span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi master/configuration/domain.xml </span>
+</code></pre></div><p>{% highlight xml %}
 ##around line 1574
 <channels default="ee">
 <channel name="ee" stack="tcpping"/>
@@ -380,30 +361,30 @@ ${wildfly.cluster.tcp.port_range}
 <protocol type="MFC"/>
 <protocol type="FRAG2"/>
 </stack>
-##suppressed
-{% endhighlight %}</p>
-<p>Now in the server-group &ldquo;marketing&rdquo; add a new property with WildFly instance IP and port.</p>
-<p>{% highlight xml %}
+##suppressed</p>
+<pre><code>
+Now in the server-group &quot;marketing&quot; add a new property with WildFly instance IP and port.
+
+{% highlight xml %}
 ##around line 1924
-##10.0.0.67 slave0<br>
+##10.0.0.67 slave0  
 ##10.0.0.66 slave1
-<server-groups>
-<server-group name="marketing" profile="full-ha">
-<jvm name="default">
-<heap size="64m" max-size="512m"/>
-</jvm>
-<socket-binding-group ref="full-ha-sockets"/>
-<deployments>
-<deployment name="cluster.war" runtime-name="cluster.war"/>
-</deployments>
-<system-properties>
-<property name="wildfly.cluster.tcp.initial_hosts" value="10.0.0.67[7600],10.0.0.66[7600]"/>
-<property name="wildfly.cluster.tcp.port_range" value="0"/>
-</system-properties>
-</server-group>
+    &lt;server-groups&gt;
+        &lt;server-group name=&quot;marketing&quot; profile=&quot;full-ha&quot;&gt;
+            &lt;jvm name=&quot;default&quot;&gt;
+                &lt;heap size=&quot;64m&quot; max-size=&quot;512m&quot;/&gt;
+            &lt;/jvm&gt;
+            &lt;socket-binding-group ref=&quot;full-ha-sockets&quot;/&gt;
+            &lt;deployments&gt;
+                &lt;deployment name=&quot;cluster.war&quot; runtime-name=&quot;cluster.war&quot;/&gt;
+            &lt;/deployments&gt;
+            &lt;system-properties&gt;
+                &lt;property name=&quot;wildfly.cluster.tcp.initial_hosts&quot; value=&quot;10.0.0.67[7600],10.0.0.66[7600]&quot;/&gt;
+                &lt;property name=&quot;wildfly.cluster.tcp.port_range&quot; value=&quot;0&quot;/&gt;
+            &lt;/system-properties&gt;
+        &lt;/server-group&gt;
 ##suppressed
-{% endhighlight %}</p>
-<p>Add the above properties to the server-group &ldquo;accounting&rdquo; because as we are using the same profile &ldquo;full-ha&rdquo; the instances will start with some issues because they do not know these properties.</p>
+</code></pre><p>Add the above properties to the server-group &ldquo;accounting&rdquo; because as we are using the same profile &ldquo;full-ha&rdquo; the instances will start with some issues because they do not know these properties.</p>
 <p>{% highlight xml %}
 ##around line 1934
 ##10.0.0.67 slave0<br>
@@ -418,76 +399,71 @@ ${wildfly.cluster.tcp.port_range}
 <property name="wildfly.cluster.tcp.port_range" value="0"/>
 </system-properties>
 </server-group>
-##suppressed
-{% endhighlight %}</p>
-<p>For TCPING to work correctly you will need to add a private interface to Slaves. So let&rsquo;s start by editing the host-slave.xml file in &ldquo;Slave 0&rdquo;.</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+
+For TCPING to work correctly you will need to add a private interface to Slaves. So let's start by editing the host-slave.xml file in &quot;Slave 0&quot;. 
+
+```shell
 [root@server-slave-0 ~]# pwd
 /usr/local/wildfly/wildfly-18.0.1.Final
-[root@server-slave-0 ~]# vi slave0/configuration/host-slave.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+[root@server-slave-0 ~]# vi slave0/configuration/host-slave.xml 
+</code></pre><p>{% highlight xml %}
 ##around line 78
 <interface name="private">
 <inet-address value="${jboss.bind.address.private:127.0.0.1}"/>
 </interface>
-##suppressed
-{% endhighlight %}</p>
-<p>Edit the <code>domain.conf</code> file and add the configuration this interface on the <code>JAVA_OPTS</code> variable:</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+Edit the `domain.conf` file and add the configuration this interface on the `JAVA_OPTS` variable:
+
+```shell
 ##around line 50
-[root@server-slave-0 ~]# vi /usr/local/wildfly/wildfly-18.0.1.Final/bin/domain.conf</p>
-<p>if [ &ldquo;x$JAVA_OPTS&rdquo; = &ldquo;x&rdquo; ]; then
-JAVA_OPTS=&quot;-Xms64m -Xmx512m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true&quot;
-JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true&quot;</p>
-<p>#Edit this line
-JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.domain.base.dir=/usr/local/wildfly/wildfly-18.0.1.Final/slave0 -Djboss.host.default.config=host-slave.xml -Djboss.domain.master.address=10.0.0.68 -Djboss.bind.address=10.0.0.67 -Djboss.bind.address.private=10.0.0.67&quot;
+[root@server-slave-0 ~]# vi /usr/local/wildfly/wildfly-18.0.1.Final/bin/domain.conf
+
+if [ &quot;x$JAVA_OPTS&quot; = &quot;x&quot; ]; then
+   JAVA_OPTS=&quot;-Xms64m -Xmx512m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true&quot;
+   JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true&quot;
+   
+   #Edit this line
+   JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.domain.base.dir=/usr/local/wildfly/wildfly-18.0.1.Final/slave0 -Djboss.host.default.config=host-slave.xml -Djboss.domain.master.address=10.0.0.68 -Djboss.bind.address=10.0.0.67 -Djboss.bind.address.private=10.0.0.67&quot;
 else
 ##suppressed
-{% endhighlight %}</p>
-<p>Now perform the same procedure for &ldquo;Slave1&rdquo;.</p>
-<p>{% highlight bash %}
-[root@server-slave-1 ~]# pwd
+</code></pre><p>Now perform the same procedure for &ldquo;Slave1&rdquo;.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-slave-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/wildfly/wildfly-18.0.1.Final
-[root@server-slave-1 ~]# vi slave1/configuration/host-slave.xml
-{% endhighlight %}</p>
-<p>{% highlight xml %}
+<span style="color:#f92672">[</span>root@server-slave-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi slave1/configuration/host-slave.xml </span>
+</code></pre></div><p>{% highlight xml %}
 ##around line 78
 <interface name="private">
 <inet-address value="${jboss.bind.address.private:127.0.0.1}"/>
 </interface>
-##suppressed
-{% endhighlight %}</p>
-<p>Edit the <code>domain.conf</code> file and add the configuration this interface on the <code>JAVA_OPTS</code> variable:</p>
-<p>{% highlight bash %}
+##suppressed</p>
+<pre><code>
+Edit the `domain.conf` file and add the configuration this interface on the `JAVA_OPTS` variable:
+
+```shell
 ##around line 50
-[root@server-slave-1 ~]# vi /usr/local/wildfly/wildfly-18.0.1.Final/bin/domain.conf</p>
-<p>if [ &ldquo;x$JAVA_OPTS&rdquo; = &ldquo;x&rdquo; ]; then
-JAVA_OPTS=&quot;-Xms64m -Xmx512m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true&quot;
-JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true&quot;</p>
-<p>#Edit this line
-JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.domain.base.dir=/usr/local/wildfly/wildfly-18.0.1.Final/slave0 -Djboss.host.default.config=host-slave.xml -Djboss.domain.master.address=10.0.0.68 -Djboss.bind.address=10.0.0.66 -Djboss.bind.address.private=10.0.0.66&quot;
+[root@server-slave-1 ~]# vi /usr/local/wildfly/wildfly-18.0.1.Final/bin/domain.conf
+
+if [ &quot;x$JAVA_OPTS&quot; = &quot;x&quot; ]; then
+   JAVA_OPTS=&quot;-Xms64m -Xmx512m -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true&quot;
+   JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true&quot;
+   
+   #Edit this line
+   JAVA_OPTS=&quot;$JAVA_OPTS -Djboss.domain.base.dir=/usr/local/wildfly/wildfly-18.0.1.Final/slave0 -Djboss.host.default.config=host-slave.xml -Djboss.domain.master.address=10.0.0.68 -Djboss.bind.address=10.0.0.66 -Djboss.bind.address.private=10.0.0.66&quot;
 else
 ##suppressed
-{% endhighlight %}</p>
-<p>Restart the WildFly service on the master and then on the slaves.</p>
-<p>{% highlight bash %}
-[root@server-domain ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-slave-0 ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@server-slave-1 ~]# systemctl restart wildfly
-{% endhighlight %}</p>
-<p>Now in the server logs you should see both instances forming a new cluster:</p>
-<p>{% highlight bash %}
-[root@server-slave-1 ~]# pwd
+</code></pre><p>Restart the WildFly service on the master and then on the slaves.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-domain ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-slave-0 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-slave-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart wildfly</span>
+</code></pre></div><p>Now in the server logs you should see both instances forming a new cluster:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@server-slave-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/wildfly/wildfly-18.0.1.Final
-[root@server-slave-1 ~]# tailf slave1/servers/server-marketing-1/log/server.log
-2019-12-22 18:31:52,673 INFO  [org.infinispan.CLUSTER] (MSC service thread 1-1) ISPN000094: Received new cluster view for channel ee: [node-marketing-0|1] (2) [node-marketing-0, node-marketing-1]
-{% endhighlight %}</p>
-<p>Open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
+<span style="color:#f92672">[</span>root@server-slave-1 ~<span style="color:#f92672">]</span><span style="color:#75715e"># tailf slave1/servers/server-marketing-1/log/server.log</span>
+2019-12-22 18:31:52,673 INFO  <span style="color:#f92672">[</span>org.infinispan.CLUSTER<span style="color:#f92672">]</span> <span style="color:#f92672">(</span>MSC service thread 1-1<span style="color:#f92672">)</span> ISPN000094: Received new cluster view <span style="color:#66d9ef">for</span> channel ee: <span style="color:#f92672">[</span>node-marketing-0|1<span style="color:#f92672">]</span> <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>node-marketing-0, node-marketing-1<span style="color:#f92672">]</span>
+</code></pre></div><p>Open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
 <p><img src="/static/201912-hawildfly-17.png" alt=""></p>
 <p>The request has been redirected to node &ldquo;node-marketing-1&rdquo;, see also that the request number in session is 8. So go to &ldquo;Runtime&rdquo; &ndash;&gt; &ldquo;Hosts&rdquo; &ndash;&gt; &ldquo;slave1&rdquo; and stop &ldquo;server-marketing-1&rdquo;.</p>
 <p>Refresh the page a new request will be made: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>

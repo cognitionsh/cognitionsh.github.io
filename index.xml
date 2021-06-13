@@ -45,7 +45,7 @@ In parallel with these changes, we see the evolution application servers, that i
       <description>In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.
 Install Wildfly 20 Let&amp;rsquo;s start building the application layer of our environment.These settings will be performed on the following servers:
  server-domain.mmagnani.lab - 10.0.0.193 server-subordinate-0.mmagnani.lab -10.0.0.194 server-subordinate-1.mmagnani.lab - 10.0.0.195  Let&amp;rsquo;s start with the server that will be the &amp;ldquo;Master&amp;rdquo;:
-{% highlight bash %} [root@server-domain ~]# cat /etc/redhat-release CentOS Linux release 8.</description>
+[root@server-domain ~]# cat /etc/redhat-release  CentOS Linux release 8.</description>
     </item>
     
     <item>
