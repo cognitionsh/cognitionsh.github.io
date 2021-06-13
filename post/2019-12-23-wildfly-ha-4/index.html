@@ -15,12 +15,7 @@
 
 <title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition</title>
 <meta name="title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition" />
-<meta name="description" content="Below are the chapters I, II and III:
-
-Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I
-Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II
-Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III
-"> 
+<meta name="description" content="We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager."> 
 
 
 <link rel="canonical" href="https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/" />
@@ -163,7 +158,7 @@ Building a Mission-Critical Open Source Environment for the Java Platform - Chap
               
             
               
-            By Mauricio Magnani &#183; 10 min read</div>
+            By Mauricio Magnani &#183; 9 min read</div>
           
           
           
@@ -208,14 +203,8 @@ Building a Mission-Critical Open Source Environment for the Java Platform - Chap
       
       
       <div class="py-3 my-2">
-      <p>Below are the chapters I, II and III:</p>
-<ul>
-<li><a href="http://mlab.run/2019/12/18/wildfly-ha-1">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</a></li>
-<li><a href="http://mlab.run/2019/12/21/wildfly-ha-2">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II</a></li>
-<li><a href="http://mlab.run/2019/12/21/wildfly-ha-3/">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III</a></li>
-</ul>
+      <p>We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</p>
 <h2 id="wildfly-scalability">WildFly Scalability</h2>
-<p>We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</p>
 <p>So the first step is to test the creation of a new instance using JBoss CLI.</p>
 <p>Use the master host itself for these tests. Create a file called create-server.cli:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">/host<span style="color:#f92672">=</span>slave0/server-config<span style="color:#f92672">=</span>server-marketing-7:add<span style="color:#f92672">(</span>auto-start<span style="color:#f92672">=</span>true,socket-binding-port-offset<span style="color:#f92672">=</span>400,group<span style="color:#f92672">=</span>marketing<span style="color:#f92672">)</span>
