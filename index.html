@@ -204,6 +204,123 @@
         </div>
       </div>
     
+      <div class="card mb-3">
+        <div class="card-body">
+          <h2>
+            
+            <a class="text-reset" href="https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-3/"><span class="card-title text-reset"> Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III</span></a>
+          </h2>
+          <div class="card-text">
+            <div class="font-weight-bold small post-meta">
+              
+              
+                
+                  
+                
+              
+                
+              
+                
+                  
+                
+              
+                
+              By Mauricio Magnani &#183; 9 min read</div>
+            
+            
+            
+              <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
+            
+            
+            <p>Below are the chapters I and II:
+ Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II  WildFly with Mod Cluster If you followed the previous articles, you will now have Apach Web Server HA in your environment as well as WildFly running in Domain Mode with four WildFly instances.
+The first step will be to add two new properties to our WildFly instances.</p>
+            
+            
+            
+            <a class="font-weight-bold text-reset text-decoration-none" href="https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-3/"><nobr>Read more →</nobr></a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card mb-3">
+        <div class="card-body">
+          <h2>
+            
+            <a class="text-reset" href="https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-2/"><span class="card-title text-reset"> Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II</span></a>
+          </h2>
+          <div class="card-text">
+            <div class="font-weight-bold small post-meta">
+              
+              
+                
+                  
+                
+              
+                
+              
+                
+                  
+                
+              
+                
+              By Mauricio Magnani &#183; 13 min read</div>
+            
+            
+            
+              <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
+            
+            
+            <p>In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.
+Install Wildfly 20 Let&rsquo;s start building the application layer of our environment.These settings will be performed on the following servers:
+ server-domain.mmagnani.lab - 10.0.0.193 server-subordinate-0.mmagnani.lab -10.0.0.194 server-subordinate-1.mmagnani.lab - 10.0.0.195  Let&rsquo;s start with the server that will be the &ldquo;Master&rdquo;:
+{% highlight bash %} [root@server-domain ~]# cat /etc/redhat-release CentOS Linux release 8.</p>
+            
+            
+            
+            <a class="font-weight-bold text-reset text-decoration-none" href="https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-2/"><nobr>Read more →</nobr></a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card mb-3">
+        <div class="card-body">
+          <h2>
+            
+            <a class="text-reset" href="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/"><span class="card-title text-reset"> Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</span></a>
+          </h2>
+          <div class="card-text">
+            <div class="font-weight-bold small post-meta">
+              
+              
+                
+                  
+                
+              
+                
+              
+                
+                  
+                
+              
+                
+              By Mauricio Magnani &#183; 11 min read</div>
+            
+            
+            
+              <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
+            
+            
+            <p>Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.
+In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization.</p>
+            
+            
+            
+            <a class="font-weight-bold text-reset text-decoration-none" href="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/"><nobr>Read more →</nobr></a>
+          </div>
+        </div>
+      </div>
+    
   </div>
 </div>
 

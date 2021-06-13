@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  
+    
+      
+
+
+
+
+
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition</title>
+<meta name="title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition" />
+<meta name="description" content="Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.
+In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization."> 
+
+
+<link rel="canonical" href="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/" />
+
+
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description" content="" /> 
+  <meta name="twitter:title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition" />
+  <meta name="twitter:url" content="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/" />
+  <meta name="twitter:site" content="@Softorage" /> 
+  <meta name="twitter:creator" content="@Softorage" /> 
+   
+
+
+
+  
+  <meta property="og:title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition" />
+  <meta property="og:description" content="" /> 
+  <meta property="og:site_name" content="Cognition" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/" />
+  
+   
+
+
+
+
+
+
+  
+  
+  <script type="application/ld+json">
+      { 
+          "@context": "http://schema.org", 
+          "@type": "BlogPosting",
+          "headline": "Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I",
+          
+          "url": "https://cognitionsh.github.io",
+          
+          
+          "description": ,
+          
+          
+          "publisher": {
+            "@type": "Organization",
+            "name": "Mauricio Magnani",
+            "logo": {
+              "@type": "ImageObject",
+              "url": ""
+            }
+          },
+          
+          "sameAs" : [
+            
+            
+              "https://github.com/cognitionsh"
+            ]
+          
+        }
+      </script>
+  
+
+
+    
+    <meta name="generator" content="Hugo 0.80.0" />
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/assets/css/main.min.5850e0d237d48db557dccb91349399dcb8ddfc839c5d757ef83da4cc45fca5ff.css" integrity="sha256-WFDg0jfUjbVX3MuRNJOZ3Ljd/IOcXXV&#43;&#43;D2kzEX8pf8=" crossorigin="anonymous">
+  
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  
+  <link rel=apple-touch-icon sizes=180x180 href=https://cognitionsh.github.io/assets/favicon/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://cognitionsh.github.io/assets/favicon/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://cognitionsh.github.io/assets/favicon/favicon-16x16.png><link rel=manifest href=https://cognitionsh.github.io/assets/favicon/site.webmanifest><link rel=mask-icon href=https://cognitionsh.github.io/assets/favicon/safari-pinned-tab.svg color=#7817c4><link rel=icon href=https://cognitionsh.github.io/assets/favicon/favicon.ico type=image/x-icon><link rel="shortcut icon" href=https://cognitionsh.github.io/assets/favicon/favicon.ico type=image/x-icon><meta name=apple-mobile-web-app-title content="Vibrant Shadows Theme"><meta name=application-name content="Vibrant Shadows Theme"><meta name=msapplication-TileColor content="#ffffff"><meta name=theme-color content="#ffffff">
+  
+  
+  
+  <meta name="theme-color" content="#fff6f8">
+  
+  <meta name="msapplication-navbutton-color" content="#fff6f8">
+  
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  
+</head>
+<body><header>
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top flex-column">
+    <div class="container-fluid">
+      
+      <a class="navbar-brand rounded px-3" href="https://cognitionsh.github.io"><span class="text-nav"><span class="brand">&nbsp;&nbsp;&nbsp;Cognition</span></span></a>
+      
+      
+    </div>
+    
+  </nav>
+</header>
+<div id="content">
+<div class="container-fluid bg-clr1 text-light text-center pb-3 pt-4 position-relative shadow">
+  <div style="height:3.5rem;"></div>
+  <h1>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</h1>
+  <p class="description"></p>
+</div>
+<div class="container-fluid bg-nav p-4">
+  <div class="row">
+    <div class="col-md-3">
+      
+      <div class="bg-mat p-4 rounded" style="overflow-x: auto;">
+        <div class="h4 mb-3">
+        Contents
+        </div>
+        <nav id="TableOfContents">
+  <ol>
+    <li><a href="#wildfly">Wildfly</a></li>
+    <li><a href="#domain-mode-x-standalone-mode">Domain Mode x Standalone Mode</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+  </ol>
+
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#active-server">Active Server</a></li>
+        <li><a href="#passive-server">Passive Server</a></li>
+      </ol>
+    </li>
+    <li><a href="#compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</a></li>
+  </ol>
+</nav>
+      </div>
+      
+    </div>
+    <div class="col-md-9">
+        
+      
+      <div class="py-1">
+        <div class="row">
+          <div class="col-md-7 small text-muted post-meta my-1">
+            
+            
+              
+                
+              
+            
+              
+            
+              
+                
+              
+            
+              
+            By Mauricio Magnani &#183; 11 min read</div>
+          
+          
+          
+          <div class="col-md-auto ml-3 my-1">
+            <div class="row">
+              <div class="col-auto p-0">
+              Share on:&nbsp;&nbsp;
+              </div>
+              <div class="col p-0">
+                <span class="lead">
+                  
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f&quote=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I" rel="noreferrer nofollow" target="_blank" title="Share on Facebook" aria-label="Share on Facebook"><span class="fab fa-facebook"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f&text=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I:%0Ahttps%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f" rel="noreferrer nofollow" target="_blank" title="Share on Twitter" aria-label="Share on Twitter"><span class="fab fa-twitter"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f&title=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I&summary=&source=Cognition" rel="noreferrer nofollow" target="_blank" title="Share on LinkedIn" aria-label="Share on LinkedIn"><span class="fab fa-linkedin"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://t.me/share/url?url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f&text=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I" rel="noreferrer nofollow" target="_blank" title="Share on Telegram" aria-label="Share on Telegram"><span class="fab fa-telegram"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="whatsapp://send?text=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f%0A%0ABuilding%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I" data-text="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I" data-href="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/" rel="noreferrer nofollow" target="_blank" title="Share on Whatsapp" aria-label="Share on Whatsapp"><span class="fab fa-whatsapp"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://reddit.com/submit?url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f&title=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I" rel="noreferrer nofollow" target="_blank" title="Share on Reddit" aria-label="Share on Reddit"><span class="fab fa-reddit"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="mailto:?subject=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20I&body=%0A%0Ahttps%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-18-wildfly-ha-1%2f" target="_blank" title="Share via email" aria-label="Share via email"><span class="fas fa-envelope"></span></a>
+                  
+                </span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        
+        
+      </div>
+      
+      
+      <div class="py-3 my-2">
+      <p>Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.</p>
+<p>In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization. They also provide a stable and scalable infrastructure for mission critical applications. One of the biggest challenges for application servers is to couple highly complex services, making them stable and flexible.</p>
+<p>If you want a high availability, scalable environment with no vendor lock-in, <a href="https://wildfly.org/">WildFly</a> is an open source community option.</p>
+<h2 id="wildfly">Wildfly</h2>
+<p>WildFly is an open source application server that is 100% compliant with the Java EE EE 8 specification. In previous versions of Java EE even using only a few technologies for application development, we were required to deal with all the features deployed on the server. . To solve this problem from Java EE 6, the concept of profile was inserted, which aims to create configurations with specific responsibilities, such as the Web Profile that has technologies for web development.</p>
+<p>In this architecture we will use Wildfly with the &ldquo;full-ha&rdquo; profile to meet our Clustering and Balancing needs.</p>
+<h2 id="domain-mode-x-standalone-mode">Domain Mode x Standalone Mode</h2>
+<p>Wildfly has two types of architecture known as &ldquo;Standalone Mode&rdquo; and &ldquo;Domain Mode&rdquo;. In standalone mode we can work with a single instance very similar to older (JBoss) versions such as JBoss AS 5 and JBoss AS 6.</p>
+<p>The major problem with using Standalone Mode is decentralized administration which can cause a lot of headache when replicating the settings on each server.</p>
+<p>To solve this problem we have Domain Mode in which all configurations are centralized in a component known as master and the servers are distributed in the subordinates using the configurations obtained from the connection between master and subordinate.</p>
+<p>When we start Wildfly in Domain Mode in the default configuration we have at least four processes. One Host Controller, one Process Controller and two Servers.</p>
+<ul>
+<li>
+<p>Domain Controller: is the one &ldquo;who&rdquo; controls domain management. Here are the settings that are shared between instances that are in this domain.</p>
+</li>
+<li>
+<p>Process Controller: is of great importance because he is responsible for creating the instances and also the Host Controller that we will talk about next. Process Controller should not be confused with an instance, it is simply a process in the JVM.</p>
+</li>
+<li>
+<p>Host Controller: As a Domain Controller, Host Controller also coordinates domain instances. He is responsible for doing something similar to &ldquo;Farm Deployment&rdquo;, ie he distributes the &ldquo;deployment&rdquo; file to all instances of the domain.</p>
+</li>
+<li>
+<p>Servers: These are the instances themselves, where are the deployed applications. An important point is that each server is a Java process.</p>
+</li>
+</ul>
+<p>Among the benefits of using Domain Mode we can cite include:</p>
+<ul>
+<li>Centralized management;</li>
+<li>Centralized configuration;</li>
+<li>Deploy centralized;</li>
+<li>Centralized maintenance;</li>
+<li>High availability management</li>
+</ul>
+<p>You can find more information in the <a href="https://docs.wildfly.org/20/Admin_Guide.html">administration guide</a></p>
+<h2 id="architecture">Architecture</h2>
+<p>We will use two servers with keepalived + VIP to achieve high availability with Apache Web Servers. In addition we will use a Domain to act as master and another as Backup and to support our applications, two host controllers with two servers each, totaling four Wildfly instances.</p>
+<p>You can see our architecture in the following image:</p>
+<p><img src="/images/201912-hawildfly-02.png" alt=""></p>
+<p>All this &ldquo;lab&rdquo; is running on the very reliable &ldquo;oVirt&rdquo; virtualization platform. You can learn more about oVirt here: <a href="https://www.ovirt.org">ovirt.org</a></p>
+<p><img src="/images/201912-hawildfly-01.gif" alt=""></p>
+<h1 id="configuring-keepalive-with-apache-webserver">Configuring Keepalive with Apache WebServer</h1>
+<p>Let&rsquo;s get started by installing and configuring Keepalived and Apache Web Server high availability, and of course getting the Mod Cluster setup ready. These settings will be performed on the following servers:</p>
+<ul>
+<li>apache-httpd-01.mmagnani.lab - 10.0.0.191</li>
+<li>apache-httpd-02.mmagnani.lab - 10.0.0.192</li>
+<li>VIP - 10.0.0.190</li>
+</ul>
+<p>To make it easier to understand where I am executing each command, I will use the prefix of the servers on each line.</p>
+<p>These steps must be performed on both Apache Web Servers:</p>
+<p>Apache Web Server - apache-httpd-01.mmagnani.lab</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# cat /etc/redhat-release
+CentOS Linux release 8.2.2004 (Core)
+[root@apache-httpd-01 ~]# dnf update -y
+[root@apache-httpd-01 ~]# dnf install httpd -y
+[root@apache-httpd-01 ~]# echo &ldquo;Web Server 01&rdquo; &gt; /var/www/html/index.html
+[root@apache-httpd-01 ~]# systemctl enable httpd
+[root@apache-httpd-01 ~]# systemctl stop firewalld
+[root@apache-httpd-01 ~]# systemctl disable firewalld
+[root@apache-httpd-01 ~]# setenforce 0
+[root@apache-httpd-01 ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
+[root@apache-httpd-01 ~]# dnf install keepalived -y
+[root@apache-httpd-01 ~]# systemctl enable keepalived
+[root@apache-httpd-01 ~]# rm -Rf /etc/keepalived/keepalived.conf
+{% endhighlight %}</p>
+<p>Edit the file and leave it as below (replace as per your settings).</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# vi /etc/keepalived/keepalived.conf</p>
+<h3 id="active-server">Active Server</h3>
+<p>vrrp_script chk_httpd {</p>
+<p>script &ldquo;pidof httpd&rdquo;
+interval 2
+}
+vrrp_instance VI_1 {</p>
+<p>interface ens3
+state MASTER
+advert_int 2
+virtual_router_id 51
+priority 100
+authentication {</p>
+<pre><code>auth_type PASS
+auth_pass SimplePassword
+</code></pre>
+<p>}
+unicast_src_ip addr:10.0.0.191
+unicast_peer {</p>
+<pre><code>10.0.0.192
+</code></pre>
+<p>}
+track_script {</p>
+<pre><code>chk_httpd
+</code></pre>
+<p>}
+virtual_ipaddress {</p>
+<pre><code>10.0.0.190
+</code></pre>
+<p>}
+}
+[root@apache-httpd-01 ~]# systemctl restart httpd
+[root@apache-httpd-01 ~]# systemctl restart keepalived
+{% endhighlight %}</p>
+<p>Apache Web Server - apache-httpd-02.mmagnani.lab</p>
+<p>{% highlight bash %}
+[root@apache-httpd-02 ~]# cat /etc/redhat-release
+CentOS Linux release 8.2.2004 (Core)
+[root@apache-httpd-02 ~]# dnf update -y
+[root@apache-httpd-02 ~]# dnf install httpd -y
+[root@apache-httpd-01 ~]# echo &ldquo;Web Server 02&rdquo; &gt; /var/www/html/index.html
+[root@apache-httpd-02 ~]# systemctl enable httpd
+[root@apache-httpd-02 ~]# systemctl stop firewalld
+[root@apache-httpd-02 ~]# systemctl disable firewalld
+[root@apache-httpd-02 ~]# setenforce 0
+[root@apache-httpd-02 ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
+[root@apache-httpd-02 ~]# dnf install keepalived -y
+[root@apache-httpd-02 ~]# systemctl enable keepalived
+[root@apache-httpd-02 ~]# rm -Rf /etc/keepalived/keepalived.conf
+{% endhighlight %}</p>
+<p>Edit the file and leave it as below (replace as per your settings).</p>
+<p>{% highlight bash %}
+[root@apache-httpd-02 ~]# vi /etc/keepalived/keepalived.conf</p>
+<h3 id="passive-server">Passive Server</h3>
+<p>vrrp_script chk_httpd {</p>
+<p>script &ldquo;pidof httpd&rdquo;
+interval 2
+}
+vrrp_instance VI_1 {</p>
+<p>interface ens3
+state BACKUP
+advert_int 2
+virtual_router_id 51
+priority 50
+authentication {</p>
+<pre><code>auth_type PASS
+auth_pass SimplePassword
+</code></pre>
+<p>}
+unicast_src_ip 10.0.0.192
+unicast_peer {</p>
+<pre><code>10.0.0.191
+</code></pre>
+<p>}
+track_script {</p>
+<pre><code>chk_httpd
+</code></pre>
+<p>}
+virtual_ipaddress {</p>
+<pre><code>10.0.0.190
+</code></pre>
+<p>}
+}
+[root@apache-httpd-02 ~]# systemctl restart httpd
+[root@apache-httpd-02 ~]# systemctl restart keepalived
+{% endhighlight %}</p>
+<p>Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note that the request was directed to Apache Web Server 01.</p>
+<p><img src="/images/201912-hawildfly-03.png" alt=""></p>
+<p>For a quick test, turn off Apache Web Server 01 and see that our backup server is now responding.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# shutdown now
+{% endhighlight %}</p>
+<p><img src="/images/201912-hawildfly-04.png" alt=""></p>
+<p>Next we&rsquo;ll start Mod_cluster configuration and plug it in WildFly.</p>
+<h2 id="compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</h2>
+<p>The best way to get updated binaries for CentoS 8 is by compiling. I know this can cause some stress but follow the steps below that everything will be very simple.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# dnf install git make cmake gcc gcc-c++ apr-util apr-devel apr-util-devel httpd-devel -y
+[root@apache-httpd-01 ~]# cd /tmp
+[root@apache-httpd-01 ~]# git clone <a href="https://github.com/modcluster/mod_cluster.git">https://github.com/modcluster/mod_cluster.git</a>
+[root@apache-httpd-01 ~]# cd mod_cluster
+[root@apache-httpd-01 ~]# git checkout 1.3.x
+[root@apache-httpd-01 ~]# cd native
+[root@apache-httpd-01 ~]# mkdir build
+[root@apache-httpd-01 ~]# cd build
+[root@apache-httpd-01 build]# cmake ../ -G &ldquo;Unix Makefiles&rdquo;
+[root@apache-httpd-01 build]# make
+{% endhighlight %}</p>
+<p>Copy the newly built modules to the Apache Web Server module directory:</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# pwd
+/tmp/mod_proxy_cluster/native/build
+[root@apache-httpd-01 ~]# cp modules/mod_proxy_cluster.so /etc/httpd/modules/
+[root@apache-httpd-01 ~]# cp modules/mod_cluster_slotmem.so /etc/httpd/modules/
+[root@apache-httpd-01 ~]# cp modules/mod_manager.so /etc/httpd/modules/
+[root@apache-httpd-01 ~]# cp modules/mod_advertise.so /etc/httpd/modules/
+{% endhighlight %}</p>
+<p>These same files must be copied to the Apache Web Server 02 module directory.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# scp modules/mod_cluster_slotmem.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
+[root@apache-httpd-01 ~]# scp modules/mod_proxy_cluster.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
+[root@apache-httpd-01 ~]# scp modules/mod_manager.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
+[root@apache-httpd-01 ~]# scp modules/mod_advertise.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
+{% endhighlight %}</p>
+<p>The mod_proxy_balancer should be disabled when mod_cluster is used. To do this simply on Apache Web Server 01 edit the 00-proxy.conf  file and comment the line referring to this module.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
+#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+{% endhighlight %}</p>
+<p>Do the same for Apache Web Server 02:</p>
+<p>{% highlight bash %}
+[root@apache-httpd-02 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
+#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+{% endhighlight %}</p>
+<p>Now is the time to create the Mod_Cluster configuration file. On Apache Web Server 01 create the file mod_cluster.conf and add the configuration information:</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# vi /etc/httpd/conf.d/mod_cluster.conf
+LoadModule proxy_cluster_module modules/mod_proxy_cluster.so
+LoadModule cluster_slotmem_module modules/mod_cluster_slotmem.so
+LoadModule manager_module modules/mod_manager.so
+LoadModule advertise_module modules/mod_advertise.so</p>
+<p>MemManagerFile cache/mod_cluster</p>
+<IfModule manager_module>
+<p>Listen 9090
+ManagerBalancerName mycluster
+Maxcontext 200
+Maxnode 200
+Maxhost 200
+ProxyTimeout 600
+CreateBalancers 1</p>
+<p>&lt;VirtualHost *:9090&gt;</p>
+<pre><code>  &lt;Directory /&gt;
+      Require all granted
+  &lt;/Directory&gt;
+
+  &lt;Location /&gt;
+    Require all granted
+  &lt;/Location&gt;
+
+KeepAliveTimeout 300
+MaxKeepAliveRequests 0
+EnableMCPMReceive on
+AllowDisplay On
+
+&lt;Location /mod_cluster_manager&gt;
+   SetHandler mod_cluster-manager
+   Require all granted
+&lt;/Location&gt;
+</code></pre>
+  </VirtualHost>
+</IfModule>
+{% endhighlight %}
+<p>Now copy the file to Apache Web Server 02.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# scp /etc/httpd/conf.d/mod_cluster.conf <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/conf.d/
+{% endhighlight %}</p>
+<p>reboot both servers to make sure everything is going up correctly.</p>
+<p>{% highlight bash %}
+[root@apache-httpd-01 ~]# reboot
+{% endhighlight %}</p>
+<p>{% highlight bash %}
+[root@apache-httpd-02 ~]# reboot
+{% endhighlight %}</p>
+<p>Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.</p>
+<p><img src="/images/201912-hawildfly-05.png" alt=""></p>
+<p>The first part of the setup is done. I know it&rsquo;s not cool to disable selinux / firewalld but I really wanted to make our life easier here. Please in a production environment make the settings properly.</p>
+
+      </div>
+      
+      
+      <div class="pt-4 mt-2 border-top">
+        <div class="row">
+          <div class="col-md-7 small text-muted post-meta my-1">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            </div>
+          
+          
+          
+        </div>
+      
+        
+          <div class="mt-3">
+            <span class="">Tags:</span>&nbsp;&nbsp;&nbsp;<a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">MODCLUSTER</span></a></div>
+        
+      
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  
+</div>
+
+    </div><footer class="text-center p-2 text-muted footer">
+  
+  
+  <div class="py-2 lead">
+    
+    
+    <a class="ml-2" href="https://github.com/cognitionsh"><span class="fab fa-github"
+        aria-label="Join us on Github"></span></a>
+    
+    
+  </div>
+  
+  
+
+  <div class="py-2 lead">
+    Cognition by Mauricio Magnani
+  </div>
+
+  <div class="py-2 copyright">
+    
+  </div>
+</footer>
+    
+    
+    
+    <script src="/assets/js/main.min.6ff0d57b7558f0225c80bade926a349330bc25d85e7ceff50d911f1156023c3e.js" integrity="sha256-b/DVe3VY8CJcgLrekmo0kzC8JdhefO/1DZEfEVYCPD4=" crossorigin="anonymous"></script>
+    <script src="/assets/js/custom.min.c8274a0cac0477f854e63f09626cc63858bb2bc9db8faecbb2834846952c7fd6.js" integrity="sha256-yCdKDKwEd/hU5j8JYmzGOFi7K8nbj67LsoNIRpUsf9Y=" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Lato&display=swap" rel="stylesheet">
+    
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+  </body>
+</html>

@@ -71,5 +71,59 @@
       <description></description>
     </item>
     
+    <item>
+      <title>centos</title>
+      <link>https://cognitionsh.github.io/tags/centos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/centos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ha</title>
+      <link>https://cognitionsh.github.io/tags/ha/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/ha/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>jboss</title>
+      <link>https://cognitionsh.github.io/tags/jboss/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/jboss/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>modcluster</title>
+      <link>https://cognitionsh.github.io/tags/modcluster/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/modcluster/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>redhat</title>
+      <link>https://cognitionsh.github.io/tags/redhat/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/redhat/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wildfly</title>
+      <link>https://cognitionsh.github.io/tags/wildfly/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/tags/wildfly/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

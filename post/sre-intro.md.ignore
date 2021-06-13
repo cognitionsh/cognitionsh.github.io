@@ -1,0 +1,26 @@
+---
+title: "Site Reliability Engineering: A practical approach - Chapter I"
+author: "Mauricio Magnani"
+description: ""
+tags: ["sre", "devops","sla", "slo","sli"]
+date: "2021-06-13"
+---
+
+Disclaimer: My native language is Brazilian Portuguese, so in case any term is confused, please let me know and I'll fix it.
+
+Following the Wikpedia definition, "Site Reliability Engineering" is a discipline that incorporates aspects of software engineering and applies them to solving IT operations problems. In terms of people, the "Site Reliability Engineer" is responsible for measuring and ensuring that services are reliable, fast and available.
+
+<!--more-->
+
+## What does an SRE do?
+
+
+## Hands-on
+
+
+### 
+
+We will only use two VMs to carry out our tests.
+
+* control-plane.mmagnani.lab
+* data-plane.mmagnani.lab
