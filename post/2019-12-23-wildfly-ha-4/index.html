@@ -246,30 +246,26 @@ webhook
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /usr/local/webhook/webhook-linux-amd64
 <span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /usr/local/webhook/webhook-linux-amd64/hooks.json</span>
-</code></pre></div><p>{% highlight json %}
-[
-{
-&ldquo;id&rdquo;: &ldquo;scale-wildfly&rdquo;,
-&ldquo;execute-command&rdquo;: &ldquo;/var/scripts/scale-wildfly.sh&rdquo;,
-&ldquo;command-working-directory&rdquo;: &ldquo;/var/webhook&rdquo;
-}
-]</p>
-<pre><code>
-Create the scale-wildfly.sh script that will actually contain JBoss CLI actions:
-
-```shell
-[root@monitor ~]# mkdir -p /var/scripts/
-[root@monitor ~]# mkdir -p /var/webhook
-[root@monitor ~]# vi /var/scripts/scale-wildfly.sh
-#!/bin/bash
-/usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c --controller=10.0.0.68:9990  &lt;&lt;EOF
-/host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
-/host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
-/host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
-/host=slave0/server=server-marketing-8:start
-EOF
-[root@monitor ~]# chmod +x /var/scripts/scale-wildfly.sh
-</code></pre><p>We will need the client which in this case is the JBoss CLI. For simplicity I will just unzip WildFly&rsquo;s zip into a directory.</p>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">[
+  {
+    <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;scale-wildfly&#34;</span>,
+    <span style="color:#f92672">&#34;execute-command&#34;</span>: <span style="color:#e6db74">&#34;/var/scripts/scale-wildfly.sh&#34;</span>,
+    <span style="color:#f92672">&#34;command-working-directory&#34;</span>: <span style="color:#e6db74">&#34;/var/webhook&#34;</span>
+  }
+]
+</code></pre></div><p>Create the scale-wildfly.sh script that will actually contain JBoss CLI actions:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir -p /var/scripts/</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir -p /var/webhook</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /var/scripts/scale-wildfly.sh</span>
+<span style="color:#75715e">#!/bin/bash</span>
+/usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c --controller<span style="color:#f92672">=</span>10.0.0.68:9990  <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">/host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
+</span><span style="color:#e6db74">/host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
+</span><span style="color:#e6db74">/host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
+</span><span style="color:#e6db74">/host=slave0/server=server-marketing-8:start
+</span><span style="color:#e6db74">EOF</span>
+<span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># chmod +x /var/scripts/scale-wildfly.sh</span>
+</code></pre></div><p>We will need the client which in this case is the JBoss CLI. For simplicity I will just unzip WildFly&rsquo;s zip into a directory.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># yum install java-1.8.0-openjdk-devel.x86_64 -y</span>
 <span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir -p /usr/local/wildfly</span>
 <span style="color:#f92672">[</span>root@monitor ~<span style="color:#f92672">]</span><span style="color:#75715e"># wget https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip -P /usr/local/wildfly</span>
