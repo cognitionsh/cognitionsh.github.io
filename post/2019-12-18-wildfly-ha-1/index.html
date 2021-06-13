@@ -139,12 +139,6 @@ In parallel with these changes, we see the evolution application servers, that i
   </ol>
 
   <ol>
-    <li>
-      <ol>
-        <li><a href="#active-server">Active Server</a></li>
-        <li><a href="#passive-server">Passive Server</a></li>
-      </ol>
-    </li>
     <li><a href="#compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</a></li>
   </ol>
 </nav>
@@ -265,207 +259,188 @@ In parallel with these changes, we see the evolution application servers, that i
 <p>To make it easier to understand where I am executing each command, I will use the prefix of the servers on each line.</p>
 <p>These steps must be performed on both Apache Web Servers:</p>
 <p>Apache Web Server - apache-httpd-01.mmagnani.lab</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# cat /etc/redhat-release
-CentOS Linux release 8.2.2004 (Core)
-[root@apache-httpd-01 ~]# dnf update -y
-[root@apache-httpd-01 ~]# dnf install httpd -y
-[root@apache-httpd-01 ~]# echo &ldquo;Web Server 01&rdquo; &gt; /var/www/html/index.html
-[root@apache-httpd-01 ~]# systemctl enable httpd
-[root@apache-httpd-01 ~]# systemctl stop firewalld
-[root@apache-httpd-01 ~]# systemctl disable firewalld
-[root@apache-httpd-01 ~]# setenforce 0
-[root@apache-httpd-01 ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
-[root@apache-httpd-01 ~]# dnf install keepalived -y
-[root@apache-httpd-01 ~]# systemctl enable keepalived
-[root@apache-httpd-01 ~]# rm -Rf /etc/keepalived/keepalived.conf
-{% endhighlight %}</p>
-<p>Edit the file and leave it as below (replace as per your settings).</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# vi /etc/keepalived/keepalived.conf</p>
-<h3 id="active-server">Active Server</h3>
-<p>vrrp_script chk_httpd {</p>
-<p>script &ldquo;pidof httpd&rdquo;
-interval 2
-}
-vrrp_instance VI_1 {</p>
-<p>interface ens3
-state MASTER
-advert_int 2
-virtual_router_id 51
-priority 100
-authentication {</p>
-<pre><code>auth_type PASS
-auth_pass SimplePassword
-</code></pre>
-<p>}
-unicast_src_ip addr:10.0.0.191
-unicast_peer {</p>
-<pre><code>10.0.0.192
-</code></pre>
-<p>}
-track_script {</p>
-<pre><code>chk_httpd
-</code></pre>
-<p>}
-virtual_ipaddress {</p>
-<pre><code>10.0.0.190
-</code></pre>
-<p>}
-}
-[root@apache-httpd-01 ~]# systemctl restart httpd
-[root@apache-httpd-01 ~]# systemctl restart keepalived
-{% endhighlight %}</p>
-<p>Apache Web Server - apache-httpd-02.mmagnani.lab</p>
-<p>{% highlight bash %}
-[root@apache-httpd-02 ~]# cat /etc/redhat-release
-CentOS Linux release 8.2.2004 (Core)
-[root@apache-httpd-02 ~]# dnf update -y
-[root@apache-httpd-02 ~]# dnf install httpd -y
-[root@apache-httpd-01 ~]# echo &ldquo;Web Server 02&rdquo; &gt; /var/www/html/index.html
-[root@apache-httpd-02 ~]# systemctl enable httpd
-[root@apache-httpd-02 ~]# systemctl stop firewalld
-[root@apache-httpd-02 ~]# systemctl disable firewalld
-[root@apache-httpd-02 ~]# setenforce 0
-[root@apache-httpd-02 ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
-[root@apache-httpd-02 ~]# dnf install keepalived -y
-[root@apache-httpd-02 ~]# systemctl enable keepalived
-[root@apache-httpd-02 ~]# rm -Rf /etc/keepalived/keepalived.conf
-{% endhighlight %}</p>
-<p>Edit the file and leave it as below (replace as per your settings).</p>
-<p>{% highlight bash %}
-[root@apache-httpd-02 ~]# vi /etc/keepalived/keepalived.conf</p>
-<h3 id="passive-server">Passive Server</h3>
-<p>vrrp_script chk_httpd {</p>
-<p>script &ldquo;pidof httpd&rdquo;
-interval 2
-}
-vrrp_instance VI_1 {</p>
-<p>interface ens3
-state BACKUP
-advert_int 2
-virtual_router_id 51
-priority 50
-authentication {</p>
-<pre><code>auth_type PASS
-auth_pass SimplePassword
-</code></pre>
-<p>}
-unicast_src_ip 10.0.0.192
-unicast_peer {</p>
-<pre><code>10.0.0.191
-</code></pre>
-<p>}
-track_script {</p>
-<pre><code>chk_httpd
-</code></pre>
-<p>}
-virtual_ipaddress {</p>
-<pre><code>10.0.0.190
-</code></pre>
-<p>}
-}
-[root@apache-httpd-02 ~]# systemctl restart httpd
-[root@apache-httpd-02 ~]# systemctl restart keepalived
-{% endhighlight %}</p>
-<p>Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note that the request was directed to Apache Web Server 01.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/redhat-release </span>
+CentOS Linux release 8.2.2004 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf update -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf install httpd -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># echo &#34;Web Server 01&#34; &gt; /var/www/html/index.html</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable httpd</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl stop firewalld</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl disable firewalld</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># setenforce 0</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># sed -i &#34;s/^SELINUX=enforcing/SELINUX=disabled/g&#34; /etc/selinux/config</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf install keepalived -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable keepalived</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># rm -Rf /etc/keepalived/keepalived.conf</span>
+</code></pre></div><p>Edit the file and leave it as below (replace as per your settings).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/keepalived/keepalived.conf</span>
+<span style="color:#75715e">### Active Server</span>
+vrrp_script chk_httpd <span style="color:#f92672">{</span>
+
+  script <span style="color:#e6db74">&#34;pidof httpd&#34;</span>
+  interval <span style="color:#ae81ff">2</span>
+<span style="color:#f92672">}</span>
+vrrp_instance VI_1 <span style="color:#f92672">{</span>
+
+  interface ens3
+  state MASTER
+  advert_int <span style="color:#ae81ff">2</span>
+  virtual_router_id <span style="color:#ae81ff">51</span>
+  priority <span style="color:#ae81ff">100</span>
+  authentication <span style="color:#f92672">{</span>
+
+    auth_type PASS
+    auth_pass SimplePassword
+  <span style="color:#f92672">}</span>
+  unicast_src_ip addr:10.0.0.191
+  unicast_peer <span style="color:#f92672">{</span>
+
+    10.0.0.192
+  <span style="color:#f92672">}</span>
+  track_script <span style="color:#f92672">{</span>
+
+    chk_httpd
+  <span style="color:#f92672">}</span>
+  virtual_ipaddress <span style="color:#f92672">{</span>
+
+    10.0.0.190
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart httpd </span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart keepalived </span>
+</code></pre></div><p>Apache Web Server - apache-httpd-02.mmagnani.lab</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/redhat-release </span>
+CentOS Linux release 8.2.2004 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf update -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf install httpd -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># echo &#34;Web Server 02&#34; &gt; /var/www/html/index.html</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable httpd</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl stop firewalld</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl disable firewalld</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># setenforce 0</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># sed -i &#34;s/^SELINUX=enforcing/SELINUX=disabled/g&#34; /etc/selinux/config</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf install keepalived -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable keepalived</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># rm -Rf /etc/keepalived/keepalived.conf</span>
+</code></pre></div><p>Edit the file and leave it as below (replace as per your settings).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/keepalived/keepalived.conf</span>
+<span style="color:#75715e">### Passive Server</span>
+vrrp_script chk_httpd <span style="color:#f92672">{</span>
+
+  script <span style="color:#e6db74">&#34;pidof httpd&#34;</span>
+  interval <span style="color:#ae81ff">2</span>
+<span style="color:#f92672">}</span>
+vrrp_instance VI_1 <span style="color:#f92672">{</span>
+
+  interface ens3
+  state BACKUP
+  advert_int <span style="color:#ae81ff">2</span>
+  virtual_router_id <span style="color:#ae81ff">51</span>
+  priority <span style="color:#ae81ff">50</span>
+  authentication <span style="color:#f92672">{</span>
+
+    auth_type PASS
+    auth_pass SimplePassword
+  <span style="color:#f92672">}</span>
+  unicast_src_ip 10.0.0.192
+  unicast_peer <span style="color:#f92672">{</span>
+
+    10.0.0.191
+  <span style="color:#f92672">}</span>
+  track_script <span style="color:#f92672">{</span>
+
+    chk_httpd
+  <span style="color:#f92672">}</span>
+  virtual_ipaddress <span style="color:#f92672">{</span>
+
+    10.0.0.190
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart httpd </span>
+<span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart keepalived </span>
+</code></pre></div><p>Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note that the request was directed to Apache Web Server 01.</p>
 <p><img src="/static/201912-hawildfly-03.png" alt=""></p>
 <p>For a quick test, turn off Apache Web Server 01 and see that our backup server is now responding.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# shutdown now
-{% endhighlight %}</p>
-<p><img src="/static/201912-hawildfly-04.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># shutdown now</span>
+</code></pre></div><p><img src="/static/201912-hawildfly-04.png" alt=""></p>
 <p>Next we&rsquo;ll start Mod_cluster configuration and plug it in WildFly.</p>
 <h2 id="compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</h2>
 <p>The best way to get updated binaries for CentoS 8 is by compiling. I know this can cause some stress but follow the steps below that everything will be very simple.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# dnf install git make cmake gcc gcc-c++ apr-util apr-devel apr-util-devel httpd-devel -y
-[root@apache-httpd-01 ~]# cd /tmp
-[root@apache-httpd-01 ~]# git clone <a href="https://github.com/modcluster/mod_cluster.git">https://github.com/modcluster/mod_cluster.git</a>
-[root@apache-httpd-01 ~]# cd mod_cluster
-[root@apache-httpd-01 ~]# git checkout 1.3.x
-[root@apache-httpd-01 ~]# cd native
-[root@apache-httpd-01 ~]# mkdir build
-[root@apache-httpd-01 ~]# cd build
-[root@apache-httpd-01 build]# cmake ../ -G &ldquo;Unix Makefiles&rdquo;
-[root@apache-httpd-01 build]# make
-{% endhighlight %}</p>
-<p>Copy the newly built modules to the Apache Web Server module directory:</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# pwd
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># dnf install git make cmake gcc gcc-c++ apr-util apr-devel apr-util-devel httpd-devel -y</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd /tmp</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># git clone https://github.com/modcluster/mod_cluster.git</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd mod_cluster</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># git checkout 1.3.x</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd native</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># mkdir build</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cd build</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 build<span style="color:#f92672">]</span><span style="color:#75715e"># cmake ../ -G &#34;Unix Makefiles&#34;</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 build<span style="color:#f92672">]</span><span style="color:#75715e"># make</span>
+</code></pre></div><p>Copy the newly built modules to the Apache Web Server module directory:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># pwd</span>
 /tmp/mod_proxy_cluster/native/build
-[root@apache-httpd-01 ~]# cp modules/mod_proxy_cluster.so /etc/httpd/modules/
-[root@apache-httpd-01 ~]# cp modules/mod_cluster_slotmem.so /etc/httpd/modules/
-[root@apache-httpd-01 ~]# cp modules/mod_manager.so /etc/httpd/modules/
-[root@apache-httpd-01 ~]# cp modules/mod_advertise.so /etc/httpd/modules/
-{% endhighlight %}</p>
-<p>These same files must be copied to the Apache Web Server 02 module directory.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# scp modules/mod_cluster_slotmem.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
-[root@apache-httpd-01 ~]# scp modules/mod_proxy_cluster.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
-[root@apache-httpd-01 ~]# scp modules/mod_manager.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
-[root@apache-httpd-01 ~]# scp modules/mod_advertise.so <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/modules/
-{% endhighlight %}</p>
-<p>The mod_proxy_balancer should be disabled when mod_cluster is used. To do this simply on Apache Web Server 01 edit the 00-proxy.conf  file and comment the line referring to this module.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
-#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-{% endhighlight %}</p>
-<p>Do the same for Apache Web Server 02:</p>
-<p>{% highlight bash %}
-[root@apache-httpd-02 ~]# vi /etc/httpd/conf.modules.d/00-proxy.conf
-#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
-{% endhighlight %}</p>
-<p>Now is the time to create the Mod_Cluster configuration file. On Apache Web Server 01 create the file mod_cluster.conf and add the configuration information:</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# vi /etc/httpd/conf.d/mod_cluster.conf
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp modules/mod_proxy_cluster.so /etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp modules/mod_cluster_slotmem.so /etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp modules/mod_manager.so /etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># cp modules/mod_advertise.so /etc/httpd/modules/</span>
+</code></pre></div><p>These same files must be copied to the Apache Web Server 02 module directory.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp modules/mod_cluster_slotmem.so root@10.0.0.192:/etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp modules/mod_proxy_cluster.so root@10.0.0.192:/etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp modules/mod_manager.so root@10.0.0.192:/etc/httpd/modules/</span>
+<span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp modules/mod_advertise.so root@10.0.0.192:/etc/httpd/modules/</span>
+</code></pre></div><p>The mod_proxy_balancer should be disabled when mod_cluster is used. To do this simply on Apache Web Server 01 edit the 00-proxy.conf  file and comment the line referring to this module.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/httpd/conf.modules.d/00-proxy.conf</span>
+<span style="color:#75715e">#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so</span>
+</code></pre></div><p>Do the same for Apache Web Server 02:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/httpd/conf.modules.d/00-proxy.conf</span>
+<span style="color:#75715e">#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so</span>
+</code></pre></div><p>Now is the time to create the Mod_Cluster configuration file. On Apache Web Server 01 create the file mod_cluster.conf and add the configuration information:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># vi /etc/httpd/conf.d/mod_cluster.conf</span>
 LoadModule proxy_cluster_module modules/mod_proxy_cluster.so
 LoadModule cluster_slotmem_module modules/mod_cluster_slotmem.so
 LoadModule manager_module modules/mod_manager.so
-LoadModule advertise_module modules/mod_advertise.so</p>
-<p>MemManagerFile cache/mod_cluster</p>
-<IfModule manager_module>
-<p>Listen 9090
-ManagerBalancerName mycluster
-Maxcontext 200
-Maxnode 200
-Maxhost 200
-ProxyTimeout 600
-CreateBalancers 1</p>
-<p>&lt;VirtualHost *:9090&gt;</p>
-<pre><code>  &lt;Directory /&gt;
-      Require all granted
-  &lt;/Directory&gt;
+LoadModule advertise_module modules/mod_advertise.so
 
-  &lt;Location /&gt;
-    Require all granted
-  &lt;/Location&gt;
+MemManagerFile cache/mod_cluster
 
-KeepAliveTimeout 300
-MaxKeepAliveRequests 0
-EnableMCPMReceive on
-AllowDisplay On
+&lt;IfModule manager_module&gt;
 
-&lt;Location /mod_cluster_manager&gt;
-   SetHandler mod_cluster-manager
-   Require all granted
-&lt;/Location&gt;
-</code></pre>
-  </VirtualHost>
-</IfModule>
-{% endhighlight %}
-<p>Now copy the file to Apache Web Server 02.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# scp /etc/httpd/conf.d/mod_cluster.conf <a href="mailto:root@10.0.0.192">root@10.0.0.192</a>:/etc/httpd/conf.d/
-{% endhighlight %}</p>
-<p>reboot both servers to make sure everything is going up correctly.</p>
-<p>{% highlight bash %}
-[root@apache-httpd-01 ~]# reboot
-{% endhighlight %}</p>
-<p>{% highlight bash %}
-[root@apache-httpd-02 ~]# reboot
-{% endhighlight %}</p>
-<p>Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.</p>
+  Listen <span style="color:#ae81ff">9090</span>
+  ManagerBalancerName mycluster
+  Maxcontext <span style="color:#ae81ff">200</span>
+  Maxnode <span style="color:#ae81ff">200</span>
+  Maxhost <span style="color:#ae81ff">200</span>
+  ProxyTimeout <span style="color:#ae81ff">600</span>
+  CreateBalancers <span style="color:#ae81ff">1</span>
+
+  &lt;VirtualHost *:9090&gt;
+
+      &lt;Directory /&gt;
+          Require all granted
+      &lt;/Directory&gt;
+
+      &lt;Location /&gt;
+        Require all granted
+      &lt;/Location&gt;
+
+    KeepAliveTimeout <span style="color:#ae81ff">300</span>
+    MaxKeepAliveRequests <span style="color:#ae81ff">0</span>
+    EnableMCPMReceive on
+    AllowDisplay On
+
+    &lt;Location /mod_cluster_manager&gt;
+       SetHandler mod_cluster-manager
+       Require all granted
+    &lt;/Location&gt;
+
+  &lt;/VirtualHost&gt;
+&lt;/IfModule&gt;
+</code></pre></div><p>Now copy the file to Apache Web Server 02.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># scp /etc/httpd/conf.d/mod_cluster.conf root@10.0.0.192:/etc/httpd/conf.d/</span>
+</code></pre></div><p>reboot both servers to make sure everything is going up correctly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-01 ~<span style="color:#f92672">]</span><span style="color:#75715e"># reboot</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@apache-httpd-02 ~<span style="color:#f92672">]</span><span style="color:#75715e"># reboot</span>
+</code></pre></div><p>Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.</p>
 <p><img src="/static/201912-hawildfly-05.png" alt=""></p>
 <p>The first part of the setup is done. I know it&rsquo;s not cool to disable selinux / firewalld but I really wanted to make our life easier here. Please in a production environment make the settings properly.</p>
 
