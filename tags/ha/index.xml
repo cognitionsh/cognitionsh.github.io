@@ -13,8 +13,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/</guid>
-      <description>Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&amp;rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.
-In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization.</description>
+      <description>&lt;p&gt;Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&amp;rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -23,10 +22,7 @@ In parallel with these changes, we see the evolution application servers, that i
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-2/</guid>
-      <description>In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.
-Install Wildfly 20 Let&amp;rsquo;s start building the application layer of our environment.These settings will be performed on the following servers:
- server-domain.mmagnani.lab - 10.0.0.193 server-subordinate-0.mmagnani.lab -10.0.0.194 server-subordinate-1.mmagnani.lab - 10.0.0.195  Let&amp;rsquo;s start with the server that will be the &amp;ldquo;Master&amp;rdquo;:
-[root@server-domain ~]# cat /etc/redhat-release  CentOS Linux release 8.</description>
+      <description>&lt;p&gt;In &lt;a href=&#34;http://mlab.run/2019/12/18/wildfly-ha-1&#34;&gt;Chapter I&lt;/a&gt;, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,9 +31,11 @@ Install Wildfly 20 Let&amp;rsquo;s start building the application layer of our e
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-3/</guid>
-      <description>Below are the chapters I and II:
- Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II  WildFly with Mod Cluster If you followed the previous articles, you will now have Apach Web Server HA in your environment as well as WildFly running in Domain Mode with four WildFly instances.
-The first step will be to add two new properties to our WildFly instances.</description>
+      <description>&lt;p&gt;Below are the chapters I and II:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://mlab.run/2019/12/18/wildfly-ha-1&#34;&gt;Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://mlab.run/2019/12/21/wildfly-ha-2&#34;&gt;Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
@@ -46,8 +44,12 @@ The first step will be to add two new properties to our WildFly instances.</desc
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/</guid>
-      <description>Below are the chapters I, II and III:
- Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III  WildFly Scalability We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</description>
+      <description>&lt;p&gt;Below are the chapters I, II and III:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://mlab.run/2019/12/18/wildfly-ha-1&#34;&gt;Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://mlab.run/2019/12/21/wildfly-ha-2&#34;&gt;Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://mlab.run/2019/12/21/wildfly-ha-3/&#34;&gt;Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

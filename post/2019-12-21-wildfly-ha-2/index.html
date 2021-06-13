@@ -15,10 +15,7 @@
 
 <title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II | Cognition</title>
 <meta name="title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II | Cognition" />
-<meta name="description" content="In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.
-Install Wildfly 20 Let&rsquo;s start building the application layer of our environment.These settings will be performed on the following servers:
- server-domain.mmagnani.lab - 10.0.0.193 server-subordinate-0.mmagnani.lab -10.0.0.194 server-subordinate-1.mmagnani.lab - 10.0.0.195  Let&rsquo;s start with the server that will be the &ldquo;Master&rdquo;:
-[root@server-domain ~]# cat /etc/redhat-release  CentOS Linux release 8."> 
+<meta name="description" content="In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology."> 
 
 
 <link rel="canonical" href="https://cognitionsh.github.io/post/2019-12-21-wildfly-ha-2/" />
@@ -544,7 +541,6 @@ else
 <p><img src="/static/201912-hawildfly-11.gif" alt=""></p>
 <p>It is! Now we have our topology with One Host Master, Two Host Subordinates and Four WildFly Instances.</p>
 <p>In the next part we will finally connect this to Mod Cluster and deploy our application.</p>
-
       </div>
       
       

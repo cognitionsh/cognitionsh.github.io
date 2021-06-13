@@ -15,8 +15,7 @@
 
 <title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition</title>
 <meta name="title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I | Cognition" />
-<meta name="description" content="Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.
-In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization."> 
+<meta name="description" content="Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving."> 
 
 
 <link rel="canonical" href="https://cognitionsh.github.io/post/2019-12-18-wildfly-ha-1/" />
@@ -136,9 +135,7 @@ In parallel with these changes, we see the evolution application servers, that i
     <li><a href="#wildfly">Wildfly</a></li>
     <li><a href="#domain-mode-x-standalone-mode">Domain Mode x Standalone Mode</a></li>
     <li><a href="#architecture">Architecture</a></li>
-  </ol>
-
-  <ol>
+    <li><a href="#configuring-keepalive-with-apache-webserver">Configuring Keepalive with Apache WebServer</a></li>
     <li><a href="#compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</a></li>
   </ol>
 </nav>
@@ -249,7 +246,7 @@ In parallel with these changes, we see the evolution application servers, that i
 <p><img src="/static/201912-hawildfly-02.png" alt=""></p>
 <p>All this &ldquo;lab&rdquo; is running on the very reliable &ldquo;oVirt&rdquo; virtualization platform. You can learn more about oVirt here: <a href="https://www.ovirt.org">ovirt.org</a></p>
 <p><img src="/static/201912-hawildfly-01.gif" alt=""></p>
-<h1 id="configuring-keepalive-with-apache-webserver">Configuring Keepalive with Apache WebServer</h1>
+<h2 id="configuring-keepalive-with-apache-webserver">Configuring Keepalive with Apache WebServer</h2>
 <p>Let&rsquo;s get started by installing and configuring Keepalived and Apache Web Server high availability, and of course getting the Mod Cluster setup ready. These settings will be performed on the following servers:</p>
 <ul>
 <li>apache-httpd-01.mmagnani.lab - 10.0.0.191</li>
@@ -443,7 +440,6 @@ MemManagerFile cache/mod_cluster
 </code></pre></div><p>Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.</p>
 <p><img src="/static/201912-hawildfly-05.png" alt=""></p>
 <p>The first part of the setup is done. I know it&rsquo;s not cool to disable selinux / firewalld but I really wanted to make our life easier here. Please in a production environment make the settings properly.</p>
-
       </div>
       
       

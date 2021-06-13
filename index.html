@@ -232,8 +232,12 @@
               <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
             
             
-            <p>Below are the chapters I, II and III:
- Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III  WildFly Scalability We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</p>
+            <p><p>Below are the chapters I, II and III:</p>
+<ul>
+<li><a href="http://mlab.run/2019/12/18/wildfly-ha-1">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</a></li>
+<li><a href="http://mlab.run/2019/12/21/wildfly-ha-2">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II</a></li>
+<li><a href="http://mlab.run/2019/12/21/wildfly-ha-3/">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III</a></li>
+</ul></p>
             
             
             
@@ -270,9 +274,11 @@
               <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
             
             
-            <p>Below are the chapters I and II:
- Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II  WildFly with Mod Cluster If you followed the previous articles, you will now have Apach Web Server HA in your environment as well as WildFly running in Domain Mode with four WildFly instances.
-The first step will be to add two new properties to our WildFly instances.</p>
+            <p><p>Below are the chapters I and II:</p>
+<ul>
+<li><a href="http://mlab.run/2019/12/18/wildfly-ha-1">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</a></li>
+<li><a href="http://mlab.run/2019/12/21/wildfly-ha-2">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II</a></li>
+</ul></p>
             
             
             
@@ -309,10 +315,7 @@ The first step will be to add two new properties to our WildFly instances.</p>
               <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
             
             
-            <p>In Chapter I, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.
-Install Wildfly 20 Let&rsquo;s start building the application layer of our environment.These settings will be performed on the following servers:
- server-domain.mmagnani.lab - 10.0.0.193 server-subordinate-0.mmagnani.lab -10.0.0.194 server-subordinate-1.mmagnani.lab - 10.0.0.195  Let&rsquo;s start with the server that will be the &ldquo;Master&rdquo;:
-[root@server-domain ~]# cat /etc/redhat-release  CentOS Linux release 8.</p>
+            <p><p>In <a href="http://mlab.run/2019/12/18/wildfly-ha-1">Chapter I</a>, we set up the high availability of the Web layer. In this chapter we will install WildFly and configure the Master/Subordinate topology.</p></p>
             
             
             
@@ -349,8 +352,7 @@ Install Wildfly 20 Let&rsquo;s start building the application layer of our envir
               <div class="pb-1 mt-1"><a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 mb-1 py-2">MODCLUSTER</span></a></div>
             
             
-            <p>Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.
-In parallel with these changes, we see the evolution application servers, that increasingly offer highly complex features such as load balancing components, smart asynchronous messaging, transaction control and many other technologies facilitating application development and standardization.</p>
+            <p><p>Currently the Java platform is one of the most consolidated in the world, much of this is due to platform&rsquo;s ability to support other languages such as Kotlin, Groovy and Scala, etc. Thousands of web and mobile applications are developed using the platform as a base. The Java platform has changed a lot in recent years and probably will keep evolving.</p></p>
             
             
             
