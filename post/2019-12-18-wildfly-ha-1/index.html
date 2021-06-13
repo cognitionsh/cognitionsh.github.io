@@ -252,9 +252,9 @@ In parallel with these changes, we see the evolution application servers, that i
 <h2 id="architecture">Architecture</h2>
 <p>We will use two servers with keepalived + VIP to achieve high availability with Apache Web Servers. In addition we will use a Domain to act as master and another as Backup and to support our applications, two host controllers with two servers each, totaling four Wildfly instances.</p>
 <p>You can see our architecture in the following image:</p>
-<p><img src="/images/201912-hawildfly-02.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-02.png" alt=""></p>
 <p>All this &ldquo;lab&rdquo; is running on the very reliable &ldquo;oVirt&rdquo; virtualization platform. You can learn more about oVirt here: <a href="https://www.ovirt.org">ovirt.org</a></p>
-<p><img src="/images/201912-hawildfly-01.gif" alt=""></p>
+<p><img src="/static/201912-hawildfly-01.gif" alt=""></p>
 <h1 id="configuring-keepalive-with-apache-webserver">Configuring Keepalive with Apache WebServer</h1>
 <p>Let&rsquo;s get started by installing and configuring Keepalived and Apache Web Server high availability, and of course getting the Mod Cluster setup ready. These settings will be performed on the following servers:</p>
 <ul>
@@ -369,12 +369,12 @@ virtual_ipaddress {</p>
 [root@apache-httpd-02 ~]# systemctl restart keepalived
 {% endhighlight %}</p>
 <p>Now open the browser and enter the VIP IP which in this case is 10.0.0.190. Note that the request was directed to Apache Web Server 01.</p>
-<p><img src="/images/201912-hawildfly-03.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-03.png" alt=""></p>
 <p>For a quick test, turn off Apache Web Server 01 and see that our backup server is now responding.</p>
 <p>{% highlight bash %}
 [root@apache-httpd-01 ~]# shutdown now
 {% endhighlight %}</p>
-<p><img src="/images/201912-hawildfly-04.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-04.png" alt=""></p>
 <p>Next we&rsquo;ll start Mod_cluster configuration and plug it in WildFly.</p>
 <h2 id="compiling-and-configuring-mod-cluster">Compiling and Configuring Mod Cluster</h2>
 <p>The best way to get updated binaries for CentoS 8 is by compiling. I know this can cause some stress but follow the steps below that everything will be very simple.</p>
@@ -466,7 +466,7 @@ AllowDisplay On
 [root@apache-httpd-02 ~]# reboot
 {% endhighlight %}</p>
 <p>Access the VIP IP again on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. Note that Mod Cluster settings have been loaded successfully.</p>
-<p><img src="/images/201912-hawildfly-05.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-05.png" alt=""></p>
 <p>The first part of the setup is done. I know it&rsquo;s not cool to disable selinux / firewalld but I really wanted to make our life easier here. Please in a production environment make the settings properly.</p>
 
       </div>

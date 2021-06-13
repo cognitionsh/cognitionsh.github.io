@@ -293,10 +293,10 @@ The first step will be to add two new properties to our WildFly instances.">
 [root@server-subordinate-1 ~]# systemctl restart wildfly
 {% endhighlight %}</p>
 <p>Access the VIP IP on the Mod Cluster port and context: http://10.0.0.190:9090/mod_cluster_manager. See that our instances are now connected and ready to use:</p>
-<p><img src="/images/201912-hawildfly-12.gif" alt=""></p>
+<p><img src="/static/201912-hawildfly-12.gif" alt=""></p>
 <p>Deploy the <a href="https://github.com/msmagnanijr/mlab-run-blog-files/blob/master/wildfly-ha/cluster.war">cluster.war</a> application. Open the management console and go to &ldquo;deployments&rdquo; &ndash;&gt; &ldquo;content-repository&rdquo; and upload the application. After that &ldquo;deploy&rdquo; &ndash;&gt; &ldquo;Deploy Content&rdquo; &ndash;&gt; choose &ldquo;marketing&rdquo; server group.</p>
 <p>If the application is successfully deployed, you will see the context in &ldquo;mod_cluster_manager&rdquo;: http://10.0.0.190:9090/mod_cluster_manager</p>
-<p><img src="/images/201912-hawildfly-13.gif" alt=""></p>
+<p><img src="/static/201912-hawildfly-13.gif" alt=""></p>
 <p>If you try to access the &ldquo;application context&rdquo; (http://10.0.0.190/cluster) through VIP you will get a 404 because the virtual host for that application has not yet been configured.</p>
 <p>So now let&rsquo;s create a new virtual host to make the application that was deployed in the &ldquo;marketing&rdquo; group available through VIP.</p>
 <p>{% highlight bash %}
@@ -338,12 +338,12 @@ ProxyPassReverse / balancer://marketing-lb/
 [root@server-subordinate-1 ~]#  systemctl restart wildfly
 {% endhighlight %}</p>
 <p>Finally open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
-<p><img src="/images/201912-hawildfly-14.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-14.png" alt=""></p>
 <p>This way our applications will respond via virtual host/VIP. So let&rsquo;s test the high availability of the application.</p>
 <p>The request has been redirected to server &ldquo;server-marketing-0&rdquo;. So go to &ldquo;Runtime&rdquo; &ndash;&gt; &ldquo;Hosts&rdquo; &ndash;&gt; &ldquo;slave0&rdquo; and stop &ldquo;server-marketing-0&rdquo;.</p>
-<p><img src="/images/201912-hawildfly-15.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-15.png" alt=""></p>
 <p>Open the app URL again: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
-<p><img src="/images/201912-hawildfly-16.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-16.png" alt=""></p>
 <p>This time the request was redirected to &ldquo;node-marketing-1&rdquo;. High availability is working correctly.</p>
 <p>Unfortunately the session was not maintained, this is because we have not configured our cluster yet. So in the next step we will configure the cluster with JGroups/TCPPing.</p>
 <h2 id="wildfly-and-tcpping">WildFly and TCPPING</h2>
@@ -488,10 +488,10 @@ else
 2019-12-22 18:31:52,673 INFO  [org.infinispan.CLUSTER] (MSC service thread 1-1) ISPN000094: Received new cluster view for channel ee: [node-marketing-0|1] (2) [node-marketing-0, node-marketing-1]
 {% endhighlight %}</p>
 <p>Open the browser and access the application URL: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
-<p><img src="/images/201912-hawildfly-17.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-17.png" alt=""></p>
 <p>The request has been redirected to node &ldquo;node-marketing-1&rdquo;, see also that the request number in session is 8. So go to &ldquo;Runtime&rdquo; &ndash;&gt; &ldquo;Hosts&rdquo; &ndash;&gt; &ldquo;slave1&rdquo; and stop &ldquo;server-marketing-1&rdquo;.</p>
 <p>Refresh the page a new request will be made: <a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a></p>
-<p><img src="/images/201912-hawildfly-18.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-18.png" alt=""></p>
 <p>The request has now been redirected to &ldquo;node-marketing-0&rdquo; and the number of sessions is 9. Congratulations! Session replication worked successfully.</p>
 <p>In the next chapter we will learn how to monitor this environment using Grafana, Prometheus and AlertManager.</p>
 <p>Best,</p>

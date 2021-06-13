@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  
+    
+      
+
+
+
+
+
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition</title>
+<meta name="title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition" />
+<meta name="description" content="Below are the chapters I, II and III:
+ Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III  WildFly Scalability We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager."> 
+
+
+<link rel="canonical" href="https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/" />
+
+
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description" content="" /> 
+  <meta name="twitter:title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition" />
+  <meta name="twitter:url" content="https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/" />
+  <meta name="twitter:site" content="@Softorage" /> 
+  <meta name="twitter:creator" content="@Softorage" /> 
+   
+
+
+
+  
+  <meta property="og:title" content="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV | Cognition" />
+  <meta property="og:description" content="" /> 
+  <meta property="og:site_name" content="Cognition" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/" />
+  
+   
+
+
+
+
+
+
+  
+  
+  <script type="application/ld+json">
+      { 
+          "@context": "http://schema.org", 
+          "@type": "BlogPosting",
+          "headline": "Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV",
+          
+          "url": "https://cognitionsh.github.io",
+          
+          
+          "description": ,
+          
+          
+          "publisher": {
+            "@type": "Organization",
+            "name": "Mauricio Magnani",
+            "logo": {
+              "@type": "ImageObject",
+              "url": ""
+            }
+          },
+          
+          "sameAs" : [
+            
+            
+              "https://github.com/cognitionsh"
+            ]
+          
+        }
+      </script>
+  
+
+
+    
+    <meta name="generator" content="Hugo 0.80.0" />
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/assets/css/main.min.5850e0d237d48db557dccb91349399dcb8ddfc839c5d757ef83da4cc45fca5ff.css" integrity="sha256-WFDg0jfUjbVX3MuRNJOZ3Ljd/IOcXXV&#43;&#43;D2kzEX8pf8=" crossorigin="anonymous">
+  
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  
+  <link rel=apple-touch-icon sizes=180x180 href=https://cognitionsh.github.io/assets/favicon/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=https://cognitionsh.github.io/assets/favicon/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://cognitionsh.github.io/assets/favicon/favicon-16x16.png><link rel=manifest href=https://cognitionsh.github.io/assets/favicon/site.webmanifest><link rel=mask-icon href=https://cognitionsh.github.io/assets/favicon/safari-pinned-tab.svg color=#7817c4><link rel=icon href=https://cognitionsh.github.io/assets/favicon/favicon.ico type=image/x-icon><link rel="shortcut icon" href=https://cognitionsh.github.io/assets/favicon/favicon.ico type=image/x-icon><meta name=apple-mobile-web-app-title content="Vibrant Shadows Theme"><meta name=application-name content="Vibrant Shadows Theme"><meta name=msapplication-TileColor content="#ffffff"><meta name=theme-color content="#ffffff">
+  
+  
+  
+  <meta name="theme-color" content="#fff6f8">
+  
+  <meta name="msapplication-navbutton-color" content="#fff6f8">
+  
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  
+</head>
+<body><header>
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top flex-column">
+    <div class="container-fluid">
+      
+      <a class="navbar-brand rounded px-3" href="https://cognitionsh.github.io"><span class="text-nav"><span class="brand">&nbsp;&nbsp;&nbsp;Cognition</span></span></a>
+      
+      
+    </div>
+    
+  </nav>
+</header>
+<div id="content">
+<div class="container-fluid bg-clr1 text-light text-center pb-3 pt-4 position-relative shadow">
+  <div style="height:3.5rem;"></div>
+  <h1>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV</h1>
+  <p class="description"></p>
+</div>
+<div class="container-fluid bg-nav p-4">
+  <div class="row">
+    <div class="col-md-3">
+      
+      <div class="bg-mat p-4 rounded" style="overflow-x: auto;">
+        <div class="h4 mb-3">
+        Contents
+        </div>
+        <nav id="TableOfContents">
+  <ol>
+    <li><a href="#wildfly-scalability">WildFly Scalability</a></li>
+    <li><a href="#wildfly-event-based-auto-scaling">WildFly Event-based Auto Scaling</a></li>
+  </ol>
+</nav>
+      </div>
+      
+    </div>
+    <div class="col-md-9">
+        
+      
+      <div class="py-1">
+        <div class="row">
+          <div class="col-md-7 small text-muted post-meta my-1">
+            
+            
+              
+                
+              
+            
+              
+            
+              
+                
+              
+            
+              
+            By Mauricio Magnani &#183; 10 min read</div>
+          
+          
+          
+          <div class="col-md-auto ml-3 my-1">
+            <div class="row">
+              <div class="col-auto p-0">
+              Share on:&nbsp;&nbsp;
+              </div>
+              <div class="col p-0">
+                <span class="lead">
+                  
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f&quote=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV" rel="noreferrer nofollow" target="_blank" title="Share on Facebook" aria-label="Share on Facebook"><span class="fab fa-facebook"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://twitter.com/intent/tweet?source=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f&text=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV:%0Ahttps%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f" rel="noreferrer nofollow" target="_blank" title="Share on Twitter" aria-label="Share on Twitter"><span class="fab fa-twitter"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f&title=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV&summary=&source=Cognition" rel="noreferrer nofollow" target="_blank" title="Share on LinkedIn" aria-label="Share on LinkedIn"><span class="fab fa-linkedin"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://t.me/share/url?url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f&text=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV" rel="noreferrer nofollow" target="_blank" title="Share on Telegram" aria-label="Share on Telegram"><span class="fab fa-telegram"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="whatsapp://send?text=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f%0A%0ABuilding%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV" data-text="Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV" data-href="https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/" rel="noreferrer nofollow" target="_blank" title="Share on Whatsapp" aria-label="Share on Whatsapp"><span class="fab fa-whatsapp"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="https://reddit.com/submit?url=https%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f&title=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV" rel="noreferrer nofollow" target="_blank" title="Share on Reddit" aria-label="Share on Reddit"><span class="fab fa-reddit"></span></a>&nbsp;&nbsp;
+                  
+                  
+                    <a href="mailto:?subject=Building%20a%20Mission-Critical%20Open%20Source%20Environment%20for%20the%20Java%20Platform%20-%20Chapter%20IV&body=%0A%0Ahttps%3a%2f%2fcognitionsh.github.io%2fpost%2f2019-12-23-wildfly-ha-4%2f" target="_blank" title="Share via email" aria-label="Share via email"><span class="fas fa-envelope"></span></a>
+                  
+                </span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        
+        
+      </div>
+      
+      
+      <div class="py-3 my-2">
+      <p>Below are the chapters I, II and III:</p>
+<ul>
+<li><a href="http://mlab.run/2019/12/18/wildfly-ha-1">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I</a></li>
+<li><a href="http://mlab.run/2019/12/21/wildfly-ha-2">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II</a></li>
+<li><a href="http://mlab.run/2019/12/21/wildfly-ha-3/">Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III</a></li>
+</ul>
+<h2 id="wildfly-scalability">WildFly Scalability</h2>
+<p>We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</p>
+<p>So the first step is to test the creation of a new instance using JBoss CLI.</p>
+<p>Use the master host itself for these tests. Create a file called create-server.cli:</p>
+<p>{% highlight bash %}
+/host=slave0/server-config=server-marketing-7:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
+/host=slave0/server-config=server-marketing-7/system-property=jboss.node.name:add(value=node-marketing-7)
+/host=slave0/server-config=server-marketing-7/system-property=wildfly.balancer.name:add(value=marketing-lb)
+/host=slave0/server=server-marketing-7:start
+{% endhighlight %}</p>
+<p>After that runs via command line:</p>
+<p>{% highlight bash %}
+[root@server-domain ~]# sh /usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c &ndash;controller=10.0.0.68:9990 &ndash;user=admin &ndash;password=redhat &ndash;file=create-server.cli
+{% endhighlight %}</p>
+<p>The script creates a new WildFly instance (server-marketing-7) on slave0 and starts it immediately.</p>
+<p>Note that a few seconds later the instance is already available on the balancer and also the application will be deployed automatically. This gives us a very interesting scalability in our WildFly environment.</p>
+<p><img src="/static/201912-hawildfly-19.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-20.png" alt=""></p>
+<p>Unfortunately this process is manual and failures can happen. We will automate it in the next steps.</p>
+<h2 id="wildfly-event-based-auto-scaling">WildFly Event-based Auto Scaling</h2>
+<p>To achieve the goal simply and effectively we will use Prometheus, AlertManager and Webhook.</p>
+<ul>
+<li>Prometheus - <a href="https://prometheus.io">https://prometheus.io</a></li>
+<li>AlertManager - <a href="https://prometheus.io/docs/alerting/alertmanager">https://prometheus.io/docs/alerting/alertmanager</a></li>
+<li>Webhook - <a href="https://github.com/adnanh/webhook">https://github.com/adnanh/webhook</a></li>
+</ul>
+<p>For this purpose I will use the server: monitor.mmagnani.lab - 10.0.0.117</p>
+<p>The first step is to install Webhook.</p>
+<p>{% highlight bash %}
+[root@monitor ~]# cat /etc/redhat-release
+CentOS Linux release 7.7.1908 (Core)
+[root@monitor ~]# systemctl stop firewalld
+[root@monitor ~]# systemctl disable firewalld
+[root@monitor ~]# setenforce 0
+[root@monitor ~]# sed -i &ldquo;s/^SELINUX=enforcing/SELINUX=disabled/g&rdquo; /etc/selinux/config
+[root@monitor ~]# mkdir -p /usr/local/webhook
+[root@monitor ~]# wget <a href="https://github.com/adnanh/webhook/releases/download/2.6.11/webhook-linux-amd64.tar.gz">https://github.com/adnanh/webhook/releases/download/2.6.11/webhook-linux-amd64.tar.gz</a> -P /usr/local/webhook/
+[root@monitor ~]# cd /usr/local/webhook/
+[root@monitor ~]# tar -xzvf webhook-linux-amd64.tar.gz
+[root@monitor ~]# cd webhook-linux-amd64
+[root@monitor ~]# ls
+webhook
+[root@monitor ~]# pwd
+/usr/local/webhook/webhook-linux-amd64
+{% endhighlight %}</p>
+<p>Now create the hooks.json file that will contain the action to take when any event happens:</p>
+<p>{% highlight bash %}
+[root@monitor ~]# pwd
+/usr/local/webhook/webhook-linux-amd64
+[root@monitor ~]# vi /usr/local/webhook/webhook-linux-amd64/hooks.json
+{% endhighlight %}
+{% highlight json %}
+[
+{
+&ldquo;id&rdquo;: &ldquo;scale-wildfly&rdquo;,
+&ldquo;execute-command&rdquo;: &ldquo;/var/scripts/scale-wildfly.sh&rdquo;,
+&ldquo;command-working-directory&rdquo;: &ldquo;/var/webhook&rdquo;
+}
+]
+{% endhighlight %}</p>
+<p>Create the scale-wildfly.sh script that will actually contain JBoss CLI actions:</p>
+<p>{% highlight bash %}
+[root@monitor ~]# mkdir -p /var/scripts/
+[root@monitor ~]# mkdir -p /var/webhook
+[root@monitor ~]# vi /var/scripts/scale-wildfly.sh
+#!/bin/bash
+/usr/local/wildfly/wildfly-18.0.1.Final/bin/jboss-cli.sh -c &ndash;controller=10.0.0.68:9990  &laquo;EOF
+/host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
+/host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
+/host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
+/host=slave0/server=server-marketing-8:start
+EOF
+[root@monitor ~]# chmod +x /var/scripts/scale-wildfly.sh
+{% endhighlight %}</p>
+<p>We will need the client which in this case is the JBoss CLI. For simplicity I will just unzip WildFly&rsquo;s zip into a directory.</p>
+<p>{% highlight bash %}
+[root@monitor ~]# yum install java-1.8.0-openjdk-devel.x86_64 -y
+[root@monitor ~]# mkdir -p /usr/local/wildfly
+[root@monitor ~]# wget <a href="https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip">https://download.jboss.org/wildfly/18.0.1.Final/wildfly-18.0.1.Final.zip</a> -P /usr/local/wildfly
+[root@monitor ~]# cd /usr/local/wildfly
+[root@monitor ~]# unzip wildfly-18.0.1.Final.zip
+{% endhighlight %}</p>
+<p>Now start webhook:</p>
+<p>{% highlight bash %}
+[root@monitor ~]# pwd
+/usr/local/webhook/webhook-linux-amd64
+[root@monitor ~]# ./webhook  -hooks hooks.json -verbose
+####TODO put this as a service script
+{% endhighlight %}</p>
+<p>It will start up on default port 9000 and will provide you with one HTTP endpoint: <a href="http://monitor.mmagnani.lab:9000/hooks/scale-wildfly">http://monitor.mmagnani.lab:9000/hooks/scale-wildfly</a></p>
+<p>By performing a simple HTTP GET or POST request to that endpoint, the specified script would be executed.</p>
+<p>{% highlight bash %}
+[webhook] 2019/12/27 17:25:59 [b23fed] incoming HTTP request from 10.0.0.114:52462
+[webhook] 2019/12/27 17:25:59 [b23fed] scale-wildfly got matched
+[webhook] 2019/12/27 17:25:59 [b23fed] error parsing body payload due to unsupported content type header:
+[webhook] 2019/12/27 17:25:59 [b23fed] scale-wildfly hook triggered successfully
+[webhook] 2019/12/27 17:25:59 200 | 232.132µs | monitor.mmagnani.lab:9000 | GET /hooks/scale-wildfly
+[webhook] 2019/12/27 17:25:59 [b23fed] executing /var/scripts/scale-wildfly.sh (/var/scripts/scale-wildfly.sh) with arguments [&quot;/var/scripts/scale-wildfly.sh&quot;] and environment [] using /var/webhook as cwd
+[webhook] 2019/12/27 17:26:02 [b23fed] command output: [domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=400,group=marketing)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server=server-marketing-8:start
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; &ldquo;STARTING&rdquo;
+}
+[domain@10.0.0.68:9990 /]
+{% endhighlight %}</p>
+<p>Note that the cluster was automatically escalated through a request using the endpoint.</p>
+<p><img src="/static/201912-hawildfly-21.png" alt=""></p>
+<p>Our goal was successfully achieved! The next step is to do this through AlertManager.</p>
+<p>So at this point we will install Prometheus.</p>
+<p>{% highlight bash %}
+[root@monitor ~]# cd /tmp
+[root@monitor ~]# wget <a href="https://github.com/prometheus/prometheus/releases/download/v2.15.1/prometheus-2.15.1.linux-amd64.tar.gz">https://github.com/prometheus/prometheus/releases/download/v2.15.1/prometheus-2.15.1.linux-amd64.tar.gz</a>
+[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false prometheus
+[root@monitor ~]# mkdir /etc/prometheus
+[root@monitor ~]# mkdir /var/lib/prometheus
+[root@monitor ~]# chown prometheus:prometheus /etc/prometheus
+[root@monitor ~]# chown prometheus:prometheus /var/lib/prometheus
+[root@monitor ~]# tar -xvzf tar prometheus-2.15.1.linux-amd64.tar.gz
+[root@monitor ~]# mv prometheus-2.15.1.linux-amd64 prometheus-package
+[root@monitor ~]# cp prometheus-package/prometheus /usr/local/bin/
+[root@monitor ~]# cp prometheus-package/promtool /usr/local/bin/
+[root@monitor ~]# chown prometheus:prometheus /usr/local/bin/prometheus
+[root@monitor ~]# chown prometheus:prometheus /usr/local/bin/promtool
+[root@monitor ~]# cp -r prometheus-package/consoles /etc/prometheus
+[root@monitor ~]# cp -r prometheus-package/console_libraries /etc/prometheus
+[root@monitor ~]# chown -R prometheus:prometheus /etc/prometheus/consoles
+[root@monitor ~]# chown -R prometheus:prometheus /etc/prometheus/console_libraries
+[root@monitor ~]# vi /etc/prometheus/prometheus.yml</p>
+<p>global:
+scrape_interval: 10s</p>
+<p>scrape_configs:</p>
+<ul>
+<li>job_name: &lsquo;prometheus_master&rsquo;
+scrape_interval: 5s
+static_configs:
+<ul>
+<li>targets: [&lsquo;localhost:9090&rsquo;]</li>
+</ul>
+</li>
+</ul>
+<p>[root@monitor ~]# chown prometheus:prometheus /etc/prometheus/prometheus.yml
+[root@monitor ~]# vi /etc/systemd/system/prometheus.service</p>
+<p>[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target</p>
+<p>[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus &ndash;config.file /etc/prometheus/prometheus.yml &ndash;storage.tsdb.path /var/lib/prometheus &ndash;web.console.templates=/etc/prometheus/consoles &ndash;web.console.libraries=/etc/prometheus/console_libraries</p>
+<p>[Install]
+WantedBy=multi-user.target</p>
+<p>[root@monitor ~]# systemctl daemon-reload
+[root@monitor ~]# systemctl start prometheus
+[root@monitor ~]# systemctl status prometheus
+{% endhighlight %}</p>
+<p>Use the following Url to access UI: <a href="http://monitor.mmagnani.lab:9090">http://monitor.mmagnani.lab:9090</a></p>
+<p><img src="/static/201912-hawildfly-22.png" alt=""></p>
+<p>Now let&rsquo;s install the blackbox exporter. The blackbox exporter allows blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP and ICMP.</p>
+<p>{% highlight bash %}
+[root@monitor ~]# cd /tmp
+[root@monitor ~]# wget <a href="https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz">https://github.com/prometheus/blackbox_exporter/releases/download/v0.16.0/blackbox_exporter-0.16.0.linux-amd64.tar.gz</a>
+[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false blackbox_exporter
+[root@monitor ~]# tar -xvf blackbox_exporter-0.16.0.linux-amd64.tar.gz
+[root@monitor ~]# cp blackbox_exporter-0.16.0.linux-amd64/blackbox_exporter /usr/local/bin/blackbox_exporter
+[root@monitor ~]# chown blackbox_exporter:blackbox_exporter /usr/local/bin/blackbox_exporter
+[root@monitor ~]# mkdir /etc/blackbox_exporter
+[root@monitor ~]# vi /etc/blackbox_exporter/blackbox.yml</p>
+<p>modules:
+http_2xx:
+prober: http
+timeout: 5s
+http:
+valid_status_codes: []
+method: GET</p>
+<p>[root@monitor ~]# chown blackbox_exporter:blackbox_exporter /etc/blackbox_exporter/blackbox.yml
+[root@monitor ~]# vi /etc/systemd/system/blackbox_exporter.service</p>
+<p>[Unit]
+Description=Blackbox Exporter
+Wants=network-online.target
+After=network-online.target</p>
+<p>[Service]
+User=blackbox_exporter
+Group=blackbox_exporter
+Type=simple
+ExecStart=/usr/local/bin/blackbox_exporter &ndash;config.file /etc/blackbox_exporter/blackbox.yml</p>
+<p>[Install]
+WantedBy=multi-user.target</p>
+<p>[root@monitor ~]# systemctl daemon-reload
+[root@monitor ~]# systemctl start blackbox_exporter
+[root@monitor ~]# systemctl enable blackbox_exporter
+{% endhighlight %}</p>
+<p>Now edit the Prometheus configuration and add our target:</p>
+<p>{% highlight bash %}
+[root@monitor ~]# vi /etc/prometheus/prometheus.yml</p>
+<ul>
+<li>job_name: &lsquo;blackbox-marketing&rsquo;
+metrics_path: /probe
+params:
+module: [http_2xx]
+static_configs:
+<ul>
+<li>targets:
+<ul>
+<li><a href="http://marketing.mmagnani.lab">http://marketing.mmagnani.lab</a>
+relabel_configs:</li>
+</ul>
+</li>
+<li>source_labels: [<strong>address</strong>]
+target_label: __param_target</li>
+<li>source_labels: [__param_target]
+target_label: instance</li>
+<li>target_label: <strong>address</strong>
+replacement: localhost:9115</li>
+</ul>
+</li>
+</ul>
+<p>[root@monitor ~]# systemctl restart prometheus
+{% endhighlight %}</p>
+<p>Create a alarm definition:</p>
+<p>{% highlight bash %}
+[root@monitor ~]# vi /etc/prometheus/prometheus.rules.yml</p>
+<p>groups:</p>
+<ul>
+<li>name: alert.rules
+rules:
+<ul>
+<li>alert: EndpointDown
+expr: probe_success == 0
+for: 10s
+labels:
+severity: &ldquo;critical&rdquo;
+annotations:
+summary: &ldquo;Endpoint  down&rdquo;</li>
+</ul>
+</li>
+</ul>
+<p>[root@monitor ~]# chown prometheus:prometheus /etc/prometheus/prometheus.rules.yml
+[root@monitor ~]# promtool check rules /etc/prometheus/prometheus.rules.yml
+[root@monitor ~]# systemctl restart prometheus
+{% endhighlight %}</p>
+<p>Please note that the Prometheus Target definitions already display our probe:</p>
+<p><img src="/static/201912-hawildfly-23.png" alt=""></p>
+<p>Finally install AlertManager.</p>
+<p>{% highlight bash %}
+[root@monitor ~]# cd /tmp
+[root@monitor ~]# wget <a href="https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz">https://github.com/prometheus/alertmanager/releases/download/v0.20.0/alertmanager-0.20.0.linux-amd64.tar.gz</a>
+[root@monitor ~]# useradd &ndash;no-create-home &ndash;shell /bin/false alertmanager
+[root@monitor ~]# tar -xvf alertmanager-0.20.0.linux-amd64.tar.gz
+[root@monitor ~]# cp alertmanager-0.20.0.linux-amd64/alertmanager /usr/local/bin/
+[root@monitor ~]# cp alertmanager-0.20.0.linux-amd64/amtool /usr/local/bin/
+[root@monitor ~]# chown alertmanager:alertmanager /usr/local/bin/alertmanager
+[root@monitor ~]# chown alertmanager:alertmanager /usr/local/bin/amtool
+[root@monitor ~]# mkdir /etc/alertmanager
+[root@monitor ~]# vi /etc/alertmanager/alertmanager.yml</p>
+<p>global:</p>
+<p>route:
+group_by: [&lsquo;instance&rsquo;, &lsquo;alert&rsquo;]
+group_wait: 30s
+group_interval: 5m
+repeat_interval: 3h
+receiver: default-receiver</p>
+<p>receivers:</p>
+<ul>
+<li>name: default-receiver
+webhook_configs:
+<ul>
+<li>url: &ldquo;<a href="http://monitor.mmagnani.lab:9000/hooks/scale-wildfly%22">http://monitor.mmagnani.lab:9000/hooks/scale-wildfly&quot;</a></li>
+</ul>
+</li>
+</ul>
+<p>[root@monitor ~]# chown alertmanager:alertmanager -R /etc/alertmanager
+[root@monitor ~]# vi /etc/systemd/system/alertmanager.service</p>
+<p>[Unit]
+Description=Alertmanager
+Wants=network-online.target
+After=network-online.target</p>
+<p>[Service]
+User=alertmanager
+Group=alertmanager
+Type=simple
+WorkingDirectory=/etc/alertmanager/
+ExecStart=/usr/local/bin/alertmanager &ndash;config.file=/etc/alertmanager/alertmanager.yml &ndash;web.external-url http://0.0.0.0:9093</p>
+<p>[Install]
+WantedBy=multi-user.target</p>
+<p>[root@monitor ~]# vi /etc/prometheus/prometheus.yml
+rule_files:</p>
+<ul>
+<li>&lsquo;prometheus.rules.yml&rsquo;
+alerting:
+alertmanagers:</li>
+<li>static_configs:
+<ul>
+<li>targets:
+<ul>
+<li>localhost:9093</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>[root@monitor ~]# systemctl restart prometheus
+[root@monitor ~]# systemctl restart alertmanager
+{% endhighlight %}</p>
+<p>Note that the alert will be inactive: <a href="http://monitor.mmagnani.lab:9090/alerts">http://monitor.mmagnani.lab:9090/alerts</a></p>
+<p><img src="/static/201912-hawildfly-24.png" alt=""></p>
+<p>Check the AlertManager: <a href="http://monitor.mmagnani.lab:9093/#/alerts">http://monitor.mmagnani.lab:9093/#/alerts</a></p>
+<p><img src="/static/201912-hawildfly-25.png" alt=""></p>
+<p>Let&rsquo;s stop all instances of the marketing group to make sure the app is down.</p>
+<p>When we stop instances the application will be &ldquo;down&rdquo; and our alert will be firing.</p>
+<p><img src="/static/201912-hawildfly-26.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-27.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-28.png" alt=""></p>
+<p>Our endpoint that performs environment scaling will be triggered:</p>
+<p>{% highlight bash %}
+[webhook] 2019/12/29 19:55:33 [5f95ff] incoming HTTP request from 10.0.0.117:38598
+[webhook] 2019/12/29 19:55:33 [5f95ff] scale-wildfly got matched
+[webhook] 2019/12/29 19:55:33 [5f95ff] scale-wildfly hook triggered successfully
+[webhook] 2019/12/29 19:55:33 200 | 130.171µs | monitor.mmagnani.lab:9000 | POST /hooks/scale-wildfly
+[webhook] 2019/12/29 19:55:33 [5f95ff] executing /var/scripts/scale-wildfly.sh (/var/scripts/scale-wildfly.sh) with arguments [&quot;/var/scripts/scale-wildfly.sh&rdquo;] and environment [] using /var/webhook as cwd
+[webhook] 2019/12/29 19:55:36 [5f95ff] command output: [domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8:add(auto-start=true,socket-binding-port-offset=500,group=marketing)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=jboss.node.name:add(value=node-marketing-8)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server-config=server-marketing-8/system-property=wildfly.balancer.name:add(value=marketing-lb)
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; undefined,
+&ldquo;server-groups&rdquo; =&gt; undefined
+}
+[domain@10.0.0.68:9990 /] /host=slave0/server=server-marketing-8:start
+{
+&ldquo;outcome&rdquo; =&gt; &ldquo;success&rdquo;,
+&ldquo;result&rdquo; =&gt; &ldquo;STARTING&rdquo;
+}
+[domain@10.0.0.68:9990 /]
+[webhook] 2019/12/29 19:55:36 [5f95ff] finished handling scale-wildfly
+{% endhighlight %}</p>
+<p>A new instance has been created and our application is available again:</p>
+<p><img src="/static/201912-hawildfly-29.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-30.png" alt=""></p>
+<p>With this we have met our goal of having an elastic, scaling environment automatically based on events.</p>
+<p>Any questions or suggestions let me know!</p>
+<p>Best,</p>
+
+      </div>
+      
+      
+      <div class="pt-4 mt-2 border-top">
+        <div class="row">
+          <div class="col-md-7 small text-muted post-meta my-1">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            </div>
+          
+          
+          
+        </div>
+      
+        
+          <div class="mt-3">
+            <span class="">Tags:</span>&nbsp;&nbsp;&nbsp;<a href="/tags/jboss"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">JBOSS</span></a><a href="/tags/wildfly"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">WILDFLY</span></a><a href="/tags/ha"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">HA</span></a><a href="/tags/redhat"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">REDHAT</span></a><a href="/tags/centos"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">CENTOS</span></a><a href="/tags/modcluster"><span class="badge badge-pill bg-clr2 text-nav mr-2 py-2">MODCLUSTER</span></a></div>
+        
+      
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  
+</div>
+
+    </div><footer class="text-center p-2 text-muted footer">
+  
+  
+  <div class="py-2 lead">
+    
+    
+    <a class="ml-2" href="https://github.com/cognitionsh"><span class="fab fa-github"
+        aria-label="Join us on Github"></span></a>
+    
+    
+  </div>
+  
+  
+
+  <div class="py-2 lead">
+    Cognition by Mauricio Magnani
+  </div>
+
+  <div class="py-2 copyright">
+    
+  </div>
+</footer>
+    
+    
+    
+    <script src="/assets/js/main.min.6ff0d57b7558f0225c80bade926a349330bc25d85e7ceff50d911f1156023c3e.js" integrity="sha256-b/DVe3VY8CJcgLrekmo0kzC8JdhefO/1DZEfEVYCPD4=" crossorigin="anonymous"></script>
+    <script src="/assets/js/custom.min.c8274a0cac0477f854e63f09626cc63858bb2bc9db8faecbb2834846952c7fd6.js" integrity="sha256-yCdKDKwEd/hU5j8JYmzGOFi7K8nbj67LsoNIRpUsf9Y=" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Lato&display=swap" rel="stylesheet">
+    
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+  </body>
+</html>

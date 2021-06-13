@@ -333,7 +333,7 @@ else
 <p>{% highlight bash %}
 [root@server-domain ~]# systemctl restart wildfly
 {% endhighlight %}</p>
-<p><img src="/images/201912-hawildfly-06.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-06.png" alt=""></p>
 <p>The next step is to create/update a management user and a directory for the domain to starting the configuration of WildFly server topology.</p>
 <p>{% highlight bash %}
 [root@server-domain ~]# cd /usr/local/wildfly/wildfly-20.0.0.Final/bin
@@ -391,9 +391,9 @@ else
 <p>{% highlight bash %}
 [root@server-domain ~]# systemctl restart wildfly
 {% endhighlight %}</p>
-<p><img src="/images/201912-hawildfly-07.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-07.png" alt=""></p>
 <p>In the management console you will notice that we are still using the standard topology but we will work on it in the next steps.</p>
-<p><img src="/images/201912-hawildfly-08.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-08.png" alt=""></p>
 <p>Edit the domain.xml file and update the existing groups. The groups must be called &ldquo;marketing&rdquo; and &ldquo;accounting&rdquo; that will use the &ldquo;full-ha&rdquo; profile and &ldquo;full-ha-sockets&rdquo;.</p>
 <p>{% highlight bash %}
 [root@server-domain ~]# pwd
@@ -436,7 +436,7 @@ else
 [root@server-domain ~]#  systemctl restart wildfly
 {% endhighlight %}</p>
 <p>Note that now a new topology will be presented:</p>
-<p><img src="/images/201912-hawildfly-09.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-09.png" alt=""></p>
 <p>The next step is to create the configuration of &ldquo;Subordinate 0&rdquo; and connect it to &ldquo;Master&rdquo;.</p>
 <p>{% highlight bash %}
 [root@server-subordinate-0 ~]# pwd
@@ -504,7 +504,7 @@ else
 2020-07-06 16:39:04,153 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 24) WFLYHC0019: Registered remote slave host &ldquo;subordinate0&rdquo;, JBoss WildFly Full 20.0.0.Final (WildFly 12.0.1.Final)
 {% endhighlight %}</p>
 <p>Open the management console to see the updated topology: http://10.0.0.193:9990/console</p>
-<p><img src="/images/201912-hawildfly-10.png" alt=""></p>
+<p><img src="/static/201912-hawildfly-10.png" alt=""></p>
 <p>Now perform the same procedure for &ldquo;Subordinate 1&rdquo;.</p>
 <p>{% highlight bash %}
 [root@server-subordinate-1 ~]# pwd
@@ -572,7 +572,7 @@ else
 2020-07-06 16:48:27,522 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 24) WFLYHC0019: Registered remote slave host &ldquo;subordinate1&rdquo;, JBoss WildFly Full 20.0.0.Final (WildFly 12.0.1.Final)
 {% endhighlight %}</p>
 <p>Open the management console again to see the updated topology: http://10.0.0.193:9990/console</p>
-<p><img src="/images/201912-hawildfly-11.gif" alt=""></p>
+<p><img src="/static/201912-hawildfly-11.gif" alt=""></p>
 <p>It is! Now we have our topology with One Host Master, Two Host Subordinates and Four WildFly Instances.</p>
 <p>In the next part we will finally connect this to Mod Cluster and deploy our application.</p>
 

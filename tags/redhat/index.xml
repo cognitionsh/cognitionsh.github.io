@@ -40,5 +40,15 @@ Install Wildfly 20 Let&amp;rsquo;s start building the application layer of our e
 The first step will be to add two new properties to our WildFly instances.</description>
     </item>
     
+    <item>
+      <title>Building a Mission-Critical Open Source Environment for the Java Platform - Chapter IV</title>
+      <link>https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cognitionsh.github.io/post/2019-12-23-wildfly-ha-4/</guid>
+      <description>Below are the chapters I, II and III:
+ Building a Mission-Critical Open Source Environment for the Java Platform - Chapter I Building a Mission-Critical Open Source Environment for the Java Platform - Chapter II Building a Mission-Critical Open Source Environment for the Java Platform - Chapter III  WildFly Scalability We will scale our instances manually using JBoss CLI and later this will be done automatically using a trigger via AlertManager.</description>
+    </item>
+    
   </channel>
 </rss>
